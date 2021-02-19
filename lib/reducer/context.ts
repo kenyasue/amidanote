@@ -11,6 +11,7 @@ export const appStateContext = createContext<GlobalState>({
   renderMenu: false,
   userSignedIn: null,
   accessToken: "",
+  documentSearchKeyword: "",
 });
 
 export const dispatcherContext = createContext<Dispatch<Action>>(() => null);

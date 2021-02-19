@@ -1,0 +1,5 @@
+@import "./vars.scss";
+
+.top {
+  height: calc(100vh - (#{$headerHeight} + 2px) * 2);
+}

@@ -1,12 +1,11 @@
 @import "../node_modules/antd/dist/antd.dark.css";
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 @import "../node_modules/swagger-ui-react/swagger-ui.css";
-@import "../node_modules/codemirror/lib/codemirror.css";
-@import "../node_modules/codemirror/theme/material.css";
 
 @import "./vars.scss";
 @import "./home.scss";
 @import "./top.scss";
+@import "./codemirror.scss";
 
 body {
   font-size: 18px !important;

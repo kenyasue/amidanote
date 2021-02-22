@@ -74,18 +74,14 @@ export const actionCreateNewDocument = async (
     },
   });
 
-  /*
-  const document: Document = {
-    id: documentResponse.data.id,
-    title: documentResponse.data.title,
-    markdown: documentResponse.data.markdown,
-    createdAt: documentResponse.data.createdAt,
-    modifiedAt: documentResponse.data.modifiedAt,
-  };
-  */
-
   await actionLoadDocuments(state, dispatch);
-  actionChangeActiveTab(state, dispatch, "edit");
+
+  dispatch({
+    type: ActionTypes.setCurrentDocument,
+    payload: documentResponse.data,
+  });
+
+  //actionChangeActiveTab(state, dispatch, "edit");
 };
 
 export const actionChangeActiveTab = (
@@ -99,7 +95,6 @@ export const actionChangeActiveTab = (
   });
 
   if (isDocumentChanged) {
-    console.log("Auto save");
     isDocumentChanged = false;
     actionSaveCurrentDocument(state, dispatch, state.selectedDocument);
   }
@@ -130,6 +125,21 @@ export const actionUpdateCurrentDocument = async (
   disableAutoSave: boolean
 ) => {
   if (!disableAutoSave) isDocumentChanged = true;
+
+  // switch instance in the case active document is not belongs to the document list ary
+  const documentList: Array<Document> = state.documents;
+  const docInstance = documentList.find((doc) => doc.id === document.id);
+  if (docInstance) {
+    // replace instances
+    if (docInstance !== document) {
+      documentList[documentList.indexOf(docInstance)] = document;
+
+      dispatch({
+        type: ActionTypes.loadDocuments,
+        payload: documentList,
+      });
+    }
+  }
 
   dispatch({
     type: ActionTypes.setCurrentDocument,

@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 
-import { Layout, Row, Col, Input, Button, Space } from "antd";
+import { Tooltip, Row, Col, Input, Button, Select } from "antd";
+const { Option } = Select;
+
 const { Search } = Input;
 import {
-  PlusOutlined,
+  SettingOutlined,
   FileAddOutlined,
-  FolderAddOutlined,
+  DiffOutlined,
 } from "@ant-design/icons";
-import { Menu } from "antd";
 
 import { useStateContext, useDispatchContext } from "../lib/reducer/context";
 import TreeView from "../components/home/documentTree";
@@ -28,7 +29,6 @@ export default function Home() {
 
   useEffect(() => {
     if (documentUpdated) {
-      actionChangeCurrentDocument(state.documents[state.documents.length - 1]);
       setDocumentUpdated(false);
     }
   }, [state.documents]);
@@ -44,6 +44,42 @@ export default function Home() {
         <Col span={6} className="sider">
           <Row className="sider-header">
             <Col span={24} className="padding-left-1 ">
+              <Tooltip title="Select Project">
+                <Select
+                  defaultValue="lucy"
+                  style={{ width: "calc(100% - 108px)" }}
+                >
+                  <Option value="jack">Jack</Option>
+                </Select>
+              </Tooltip>
+              <Tooltip title="New Project">
+                <Button
+                  type="primary"
+                  icon={<DiffOutlined />}
+                  style={{ width: 48, marginLeft: 6 }}
+                  size="middle"
+                  onClick={(e) => {
+                    setDocumentUpdated(true);
+                    actionCreateNewDocument();
+                  }}
+                />
+              </Tooltip>
+              <Tooltip title="Project Settings">
+                <Button
+                  type="primary"
+                  icon={<SettingOutlined />}
+                  style={{ width: 48, marginLeft: 6 }}
+                  size="middle"
+                  onClick={(e) => {
+                    setDocumentUpdated(true);
+                    actionCreateNewDocument();
+                  }}
+                />
+              </Tooltip>
+            </Col>
+          </Row>
+          <Row className="sider-header">
+            <Col span={24} className="padding-left-1 ">
               <Search
                 placeholder="input search text"
                 style={{ width: "calc(100% - 54px)" }}
@@ -52,16 +88,18 @@ export default function Home() {
                 }}
                 value={state.documentSearchKeyword}
               />
-              <Button
-                type="primary"
-                icon={<FileAddOutlined />}
-                style={{ width: 48, marginLeft: 6 }}
-                size="middle"
-                onClick={(e) => {
-                  setDocumentUpdated(true);
-                  actionCreateNewDocument();
-                }}
-              />
+              <Tooltip title="New Note">
+                <Button
+                  type="primary"
+                  icon={<FileAddOutlined />}
+                  style={{ width: 48, marginLeft: 6 }}
+                  size="middle"
+                  onClick={(e) => {
+                    setDocumentUpdated(true);
+                    actionCreateNewDocument();
+                  }}
+                />
+              </Tooltip>
             </Col>
           </Row>
           <Row className="sider-menu">

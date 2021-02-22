@@ -24,7 +24,7 @@ const reduce = (state: any, action: any) => {
     case ActionTypes.loadDocuments:
       return { ...state, documents: action.payload };
     case ActionTypes.setCurrentDocument:
-      return { ...state, selectedDocument: action.payload };
+      return { ...state, selectedDocument: { ...action.payload } };
     case ActionTypes.triggerSave:
       return { ...state, triggerSave: !state.triggerSave };
     case ActionTypes.setActiveTab:

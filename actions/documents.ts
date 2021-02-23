@@ -81,7 +81,7 @@ export const actionCreateNewDocument = async (
     payload: documentResponse.data,
   });
 
-  //actionChangeActiveTab(state, dispatch, "edit");
+  actionChangeActiveTab(state, dispatch, "edit");
 };
 
 export const actionChangeActiveTab = (

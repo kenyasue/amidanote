@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 
-import { Tooltip, Row, Col, Input, Button, Select } from "antd";
+import {
+  Tooltip,
+  Row,
+  Col,
+  Input,
+  Button,
+  Select,
+  Modal,
+  Switch,
+  Form,
+} from "antd";
 const { Option } = Select;
 
 const { Search } = Input;
@@ -15,11 +25,13 @@ import TreeView from "../components/home/documentTree";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import ContentView from "../components/home/conetntView";
+import ProjectSelector from "../components/home/projectSelector";
 
 import useActions from "../actions/useActions";
 
 export default function Home() {
   const [documentUpdated, setDocumentUpdated] = useState(false);
+
   const {
     actionChangeCurrentDocument,
     actionCreateNewDocument,
@@ -44,38 +56,7 @@ export default function Home() {
         <Col span={6} className="sider">
           <Row className="sider-header">
             <Col span={24} className="padding-left-1 ">
-              <Tooltip title="Select Project">
-                <Select
-                  defaultValue="lucy"
-                  style={{ width: "calc(100% - 108px)" }}
-                >
-                  <Option value="jack">Jack</Option>
-                </Select>
-              </Tooltip>
-              <Tooltip title="New Project">
-                <Button
-                  type="primary"
-                  icon={<DiffOutlined />}
-                  style={{ width: 48, marginLeft: 6 }}
-                  size="middle"
-                  onClick={(e) => {
-                    setDocumentUpdated(true);
-                    actionCreateNewDocument();
-                  }}
-                />
-              </Tooltip>
-              <Tooltip title="Project Settings">
-                <Button
-                  type="primary"
-                  icon={<SettingOutlined />}
-                  style={{ width: 48, marginLeft: 6 }}
-                  size="middle"
-                  onClick={(e) => {
-                    setDocumentUpdated(true);
-                    actionCreateNewDocument();
-                  }}
-                />
-              </Tooltip>
+              <ProjectSelector />
             </Col>
           </Row>
           <Row className="sider-header">

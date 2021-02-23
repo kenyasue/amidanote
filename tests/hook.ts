@@ -67,6 +67,7 @@ before(async () => {
 after(async () => {
   // remove all documents and finish
 
+  await prisma.project.deleteMany();
   await prisma.document.deleteMany();
   await prisma.session.deleteMany();
   await prisma.user.deleteMany();

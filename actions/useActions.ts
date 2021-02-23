@@ -19,6 +19,8 @@ import {
   actionSignIn as _actionSignIn,
 } from "./documents";
 
+import { actionLoadProjects as _actionLoadProjects } from "./projects";
+
 import { actionChangeKeyword as _actionChangeKeyword } from "./search";
 
 const component = () => {
@@ -56,6 +58,9 @@ const component = () => {
     },
     actionChangeKeyword: (keyword: string) => {
       _actionChangeKeyword(state, dispatch, keyword);
+    },
+    actionLoadProjects: () => {
+      _actionLoadProjects(state, dispatch);
     },
   };
 };

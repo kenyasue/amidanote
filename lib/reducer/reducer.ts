@@ -1,4 +1,4 @@
-import type { document as Document } from "@prisma/client";
+import type { document as Document, project } from "@prisma/client";
 import { User } from "next-auth";
 
 import { ActionTypes } from "./actionTypes";
@@ -12,6 +12,7 @@ export interface GlobalState {
   userSignedIn: User;
   accessToken: string;
   documentSearchKeyword: string;
+  projects: Array<project>;
 }
 
 export interface Action {
@@ -23,6 +24,8 @@ const reduce = (state: any, action: any) => {
   switch (action.type) {
     case ActionTypes.loadDocuments:
       return { ...state, documents: action.payload };
+    case ActionTypes.loadProjects:
+      return { ...state, projects: action.payload };
     case ActionTypes.setCurrentDocument:
       return { ...state, selectedDocument: { ...action.payload } };
     case ActionTypes.triggerSave:

@@ -4,7 +4,7 @@ import {
   testClientInvalidUser,
 } from "./testClient";
 import handler from "../pages/api/project";
-import handler2 from "../pages/api/document/[id]";
+import handler2 from "../pages/api/project/default";
 
 import { expect } from "chai";
 import global from "./global";
@@ -62,5 +62,30 @@ describe("/api/project [GET]", () => {
     expect(response.status).to.eqls(200);
     expect(response.body).to.be.an("array");
     expect(response.body.length).to.eqls(0);
+  });
+});
+
+describe("/api/project/default [GET]", () => {
+  it("responds 200 as success", async () => {
+    const client = await testClient(handler2, {});
+    const response = await client.get(`/api/project/default`);
+    expect(response.status).to.eqls(200);
+    expect(response.body).to.be.an("object");
+    expect(response.body).to.have.own.property("id");
+  });
+
+  it("responds 403 as forbidden", async () => {
+    const client = await testClientNoAccessToken(handler2, {});
+    const response = await client.get(`/api/project/default`);
+    expect(response.status).to.eqls(403);
+  });
+
+  it("create automatically new project if user has no project", async () => {
+    const client = await testClientInvalidUser(handler2, {});
+    const response = await client.get(`/api/project/default`);
+    expect(response.status).to.eqls(200);
+    expect(response.body).to.be.an("object");
+
+    expect(response.body).to.have.own.property("id");
   });
 });

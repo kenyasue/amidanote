@@ -7,6 +7,7 @@ import {
   providers,
   SessionProvider,
 } from "next-auth/client";
+import axios from "axios";
 
 import { Button, Modal, Avatar, Dropdown, Menu } from "antd";
 import {
@@ -17,18 +18,18 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Session } from "inspector";
-
+import { useStateContext, useDispatchContext } from "../lib/reducer/context";
 import useActions from "../actions/useActions";
 
 export default function Header({ providers = {} }: { providers: any }) {
   const [showLogin, setShowLogin] = useState(false);
+  const state = useStateContext();
   const [session, loading] = useSession();
   const router = useRouter();
 
   const { actionSignIn } = useActions();
 
   useEffect(() => {
-    console.log("router.pathname", router.pathname);
     if (
       !loading &&
       !session &&
@@ -39,7 +40,21 @@ export default function Header({ providers = {} }: { providers: any }) {
     // redirect to home after signin
     if (session && router.pathname === "/") {
       actionSignIn(session.user, session.accessToken);
-      router.push("/home");
+
+      (async () => {
+        // get default project
+        const defaultProject = await axios({
+          method: "get",
+          url: "/api/project/default",
+          headers: {
+            acceesstoken: session.accessToken,
+          },
+        });
+
+        console.log(defaultProject);
+
+        router.push(`/project/${defaultProject.data.id}`);
+      })();
     }
 
     // redirect to index if not signed in

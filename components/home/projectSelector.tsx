@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 import {
   Tooltip,
@@ -32,6 +33,7 @@ import useActions from "../../actions/useActions";
 
 const component = () => {
   const { actionLoadProjects } = useActions();
+  const router = useRouter();
   const state = useStateContext();
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
   const [validationResult, setValidationResult] = useState({
@@ -111,16 +113,24 @@ const component = () => {
     setIsProcessing(false);
   };
 
+  const selectProject = async (projectId: number) => {
+    console.log(projectId);
+    router.push(`/project/${projectId}`);
+  };
+
   return (
     <>
       <Tooltip title="Select Project">
         <Select
           defaultValue={state.projects ? state.projects[0].id : null}
           style={{ width: "calc(100% - 108px)" }}
+          onChange={(e) => selectProject(e)}
         >
           {state.projects
             ? state.projects.map((project) => (
-                <Option value={project.id}>{project.name}</Option>
+                <Option value={project.id} key={project.id}>
+                  {project.name}
+                </Option>
               ))
             : null}
         </Select>

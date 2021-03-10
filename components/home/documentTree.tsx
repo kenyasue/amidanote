@@ -35,7 +35,7 @@ const component = () => {
   }, [state.currentProjectId]);
 
   useEffect(() => {
-    if (state.documents && state.documents.length > 0) {
+    if (state.documents) {
       if (isInitialLoad) actionChangeCurrentDocument(state.documents[0]);
       setIsInitialLoad(false);
       constructMenu(state.documents);

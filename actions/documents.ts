@@ -37,6 +37,8 @@ export const actionLoadDocuments = async (
     },
   });
 
+  console.log("documentResponse.data", documentResponse.data);
+
   dispatch({
     type: ActionTypes.loadDocuments,
     payload: documentResponse.data,

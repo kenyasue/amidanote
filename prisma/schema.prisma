@@ -14,8 +14,21 @@ model document {
   id          Int         @id @default(autoincrement())
   user        User        @relation(fields: [userId], references: [id])
   userId      Int         @default(0)
+  project     project     @relation(fields: [projectId], references: [id])
+  projectId   Int         @default(0)
   title       String      @default("")
   markdown    String      @default("")
+  createdAt   DateTime    @default(now())
+  modifiedAt  DateTime    @default(now())
+}
+
+
+model project {
+  id          Int         @id @default(autoincrement())
+  user        User        @relation(fields: [userId], references: [id])
+  userId      Int         @default(0)
+  name        String      @default("")
+  isPrivate   Boolean     @default(false)
   createdAt   DateTime    @default(now())
   modifiedAt  DateTime    @default(now())
 }

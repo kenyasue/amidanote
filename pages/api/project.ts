@@ -26,22 +26,22 @@ export default async function documentHandler(
 
 /**
  * @swagger
- * /api/document:
+ * /api/project:
  *  get:
- *     summary: Get all documents of the user
+ *     summary: Get all projects for a user
  *     providers:
  *       "application/json"
  *     responses:
  *      '403':
  *        forbidden
  *      '200':
- *        description: A list of Documents of the user
+ *        description: A list of projects depends on the user
  *        content:
  *          application/json:
  *            schema:
  *              type: array
  *              items:
- *                $ref: '#/components/schemas/Document'
+ *                $ref: '#/components/schemas/Project'
  */
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   // check accesstoken
@@ -49,53 +49,44 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await checkAuth(req.headers.acceesstoken as string);
   if (!user) return res.status(403).send("Forbidden");
 
-  const projectId: number = parseInt(req.query.project as string);
-
-  const conditions: any = {
-    userId: user.id,
-  };
-
-  if (projectId) conditions.projectId = projectId;
-
-  const allDocuments = await prisma.document.findMany({
-    where: conditions,
+  const allProjects = await prisma.project.findMany({
+    where: {
+      userId: user.id,
+    },
     orderBy: [
       {
-        title: "asc",
+        name: "asc",
       },
     ],
   });
-  res.send(allDocuments);
+  res.send(allProjects);
 };
 
 /**
  * @swagger
- * /api/document:
+ * /api/project:
  *  post:
- *     summary: Adds a document
+ *     summary: Create a new project
  *     requestBody:
  *       content:
  *         application/json:
  *           schema:
  *             type: object
  *             properties:
- *               title:
+ *               name:
  *                 type: string
- *               markdown:
- *                 type: string
- *               folderId:
- *                 type: integer
+ *               isPrivate:
+ *                 type: boolean
  *             example:   # Sample object
- *               title: "test"
- *               markdown: "test"
- *               folderId: 0
+ *               name: "test"
+ *               isPrivate: true
  *     responses:
  *       '200':
  *         description: OK
  *         content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/Document'
+ *                $ref: '#/components/schemas/Project'
  *       '400':
  *         description: Wrong paramter
  */
@@ -105,42 +96,20 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await checkAuth(req.headers.acceesstoken as string);
   if (!user) return res.status(403).send("Forbidden");
 
-  console.log(req.body);
+  const name: string = req.body.name;
+  const isPrivate: boolean = req.body.isPrivate ? req.body.isPrivate : false;
 
-  const markdown: string = req.body.markdown;
-  const title: string = req.body.title;
-  const projectId: number = parseInt(req.body.projectId);
+  if (utils.isEmpty(name)) return res.status(400).send("name is required");
 
-  if (utils.isEmpty(title)) return res.status(400).send("title is required");
-  if (!projectId) return res.status(400).send("projectId is required");
-
-  // check the user own the project
-  const projectResult = await prisma.project.findFirst({
-    where: {
-      id: projectId,
-    },
-    orderBy: [
-      {
-        id: "asc",
-      },
-    ],
-  });
-
-  if (!projectResult || projectResult.userId !== user.id)
-    if (!projectId) return res.status(400).send("Wrong project id");
-
-  const newDocument = await prisma.document.create({
+  const newProject = await prisma.project.create({
     data: {
-      title: title,
-      markdown: markdown,
+      name: name,
+      isPrivate: isPrivate,
       user: {
         connect: { id: user.id },
       },
-      project: {
-        connect: { id: projectId },
-      },
     },
   });
 
-  res.send(newDocument);
+  res.send(newProject);
 };

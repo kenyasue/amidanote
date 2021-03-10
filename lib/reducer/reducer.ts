@@ -1,4 +1,4 @@
-import type { document as Document } from "@prisma/client";
+import type { document as Document, project } from "@prisma/client";
 import { User } from "next-auth";
 
 import { ActionTypes } from "./actionTypes";
@@ -12,6 +12,8 @@ export interface GlobalState {
   userSignedIn: User;
   accessToken: string;
   documentSearchKeyword: string;
+  projects: Array<project>;
+  currentProjectId: number;
 }
 
 export interface Action {
@@ -23,8 +25,10 @@ const reduce = (state: any, action: any) => {
   switch (action.type) {
     case ActionTypes.loadDocuments:
       return { ...state, documents: action.payload };
+    case ActionTypes.loadProjects:
+      return { ...state, projects: action.payload };
     case ActionTypes.setCurrentDocument:
-      return { ...state, selectedDocument: action.payload };
+      return { ...state, selectedDocument: { ...action.payload } };
     case ActionTypes.triggerSave:
       return { ...state, triggerSave: !state.triggerSave };
     case ActionTypes.setActiveTab:
@@ -40,6 +44,9 @@ const reduce = (state: any, action: any) => {
 
     case ActionTypes.typeKeyword:
       return { ...state, documentSearchKeyword: action.payload };
+
+    case ActionTypes.setCurrentProjectId:
+      return { ...state, currentProjectId: action.payload };
 
     default:
       return state;

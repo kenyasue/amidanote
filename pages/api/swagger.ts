@@ -43,6 +43,30 @@ import path from "path";
  *         createAt:
  *           type: string
  *           format: datetime
+ *     Project:
+ *       type: object
+ *       required:
+ *         - name
+ *         - isPrivate
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The auto-generated id of the project.
+ *        userId
+ *           type: integer
+ *           description: The owner of the project
+ *         name:
+ *           type: string
+ *           description: The title of the document
+ *         isPrivate:
+ *           type: boolean
+ *           description: The flag indicate the project is private or public
+ *         modifiedAt:
+ *            type: string
+ *            format: datetime
+ *         createAt:
+ *           type: string
+ *           format: datetime
  */
 
 export default (_req: NextApiRequest, res: NextApiResponse) => {

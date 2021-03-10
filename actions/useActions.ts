@@ -19,6 +19,11 @@ import {
   actionSignIn as _actionSignIn,
 } from "./documents";
 
+import {
+  actionLoadProjects as _actionLoadProjects,
+  actionSetCurrentProjectId as _actionSetCurrentProjectId,
+} from "./projects";
+
 import { actionChangeKeyword as _actionChangeKeyword } from "./search";
 
 const component = () => {
@@ -39,14 +44,14 @@ const component = () => {
     ) => {
       _actionUpdateCurrentDocument(state, dispatch, document, disableAutoSave);
     },
-    actionCreateNewDocument: () => {
-      _actionCreateNewDocument(state, dispatch);
+    actionCreateNewDocument: (projectId: number) => {
+      _actionCreateNewDocument(state, dispatch, projectId);
     },
     actionChangeActiveTab: (tabName: string) => {
       _actionChangeActiveTab(state, dispatch, tabName);
     },
-    actionLoadDocuments: () => {
-      _actionLoadDocuments(state, dispatch);
+    actionLoadDocuments: (projectId: number) => {
+      _actionLoadDocuments(state, dispatch, projectId);
     },
     actionDeleteDocument: (document: Document) => {
       _actionDeleteDocument(state, dispatch, document);
@@ -56,6 +61,12 @@ const component = () => {
     },
     actionChangeKeyword: (keyword: string) => {
       _actionChangeKeyword(state, dispatch, keyword);
+    },
+    actionLoadProjects: () => {
+      _actionLoadProjects(state, dispatch);
+    },
+    actionSetCurrentProjectId: (projectId: number) => {
+      _actionSetCurrentProjectId(state, dispatch, projectId);
     },
   };
 };

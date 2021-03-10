@@ -26,11 +26,12 @@ export const actionSignIn = async (
 
 export const actionLoadDocuments = async (
   state: GlobalState,
-  dispatch: Dispatch<Action>
+  dispatch: Dispatch<Action>,
+  projectId: number
 ) => {
   const documentResponse = await axios({
     method: "get",
-    url: "/api/document",
+    url: `/api/document?project=${projectId}`,
     headers: {
       acceesstoken: state.accessToken,
     },
@@ -59,7 +60,8 @@ export const actionChangeCurrentDocument = async (
 
 export const actionCreateNewDocument = async (
   state: GlobalState,
-  dispatch: Dispatch<Action>
+  dispatch: Dispatch<Action>,
+  projectId: number
 ) => {
   // event listers
   const documentResponse = await axios({
@@ -69,22 +71,19 @@ export const actionCreateNewDocument = async (
       acceesstoken: state.accessToken,
     },
     data: {
+      projectId: projectId,
       title: `New Document`,
       markdown: "",
     },
   });
 
-  /*
-  const document: Document = {
-    id: documentResponse.data.id,
-    title: documentResponse.data.title,
-    markdown: documentResponse.data.markdown,
-    createdAt: documentResponse.data.createdAt,
-    modifiedAt: documentResponse.data.modifiedAt,
-  };
-  */
+  await actionLoadDocuments(state, dispatch, projectId);
 
-  await actionLoadDocuments(state, dispatch);
+  dispatch({
+    type: ActionTypes.setCurrentDocument,
+    payload: documentResponse.data,
+  });
+
   actionChangeActiveTab(state, dispatch, "edit");
 };
 
@@ -99,7 +98,6 @@ export const actionChangeActiveTab = (
   });
 
   if (isDocumentChanged) {
-    console.log("Auto save");
     isDocumentChanged = false;
     actionSaveCurrentDocument(state, dispatch, state.selectedDocument);
   }
@@ -131,6 +129,21 @@ export const actionUpdateCurrentDocument = async (
 ) => {
   if (!disableAutoSave) isDocumentChanged = true;
 
+  // switch instance in the case active document is not belongs to the document list ary
+  const documentList: Array<Document> = state.documents;
+  const docInstance = documentList.find((doc) => doc.id === document.id);
+  if (docInstance) {
+    // replace instances
+    if (docInstance !== document) {
+      documentList[documentList.indexOf(docInstance)] = document;
+
+      dispatch({
+        type: ActionTypes.loadDocuments,
+        payload: documentList,
+      });
+    }
+  }
+
   dispatch({
     type: ActionTypes.setCurrentDocument,
     payload: document,
@@ -157,7 +170,7 @@ export const actionDeleteDocument = async (
 
   isDocumentChanged = false;
 
-  actionLoadDocuments(state, dispatch);
+  actionLoadDocuments(state, dispatch, document.projectId);
 };
 
 export const actionRenderMenu = async (

@@ -26,3 +26,14 @@ export const actionLoadProjects = async (
     payload: documentResponse.data,
   });
 };
+
+export const actionSetCurrentProjectId = async (
+  state: GlobalState,
+  dispatch: Dispatch<Action>,
+  projectId: number
+) => {
+  dispatch({
+    type: ActionTypes.setCurrentProjectId,
+    payload: projectId,
+  });
+};

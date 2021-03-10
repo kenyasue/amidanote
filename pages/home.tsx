@@ -75,10 +75,7 @@ export default function Home() {
                   icon={<FileAddOutlined />}
                   style={{ width: 48, marginLeft: 6 }}
                   size="middle"
-                  onClick={(e) => {
-                    setDocumentUpdated(true);
-                    actionCreateNewDocument();
-                  }}
+                  onClick={(e) => {}}
                 />
               </Tooltip>
             </Col>

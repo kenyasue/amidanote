@@ -51,8 +51,6 @@ export default function Header({ providers = {} }: { providers: any }) {
           },
         });
 
-        console.log(defaultProject);
-
         router.push(`/project/${defaultProject.data.id}`);
       })();
     }

@@ -26,11 +26,12 @@ export const actionSignIn = async (
 
 export const actionLoadDocuments = async (
   state: GlobalState,
-  dispatch: Dispatch<Action>
+  dispatch: Dispatch<Action>,
+  projectId: number
 ) => {
   const documentResponse = await axios({
     method: "get",
-    url: "/api/document",
+    url: `/api/document?project=${projectId}`,
     headers: {
       acceesstoken: state.accessToken,
     },
@@ -59,7 +60,8 @@ export const actionChangeCurrentDocument = async (
 
 export const actionCreateNewDocument = async (
   state: GlobalState,
-  dispatch: Dispatch<Action>
+  dispatch: Dispatch<Action>,
+  projectId: number
 ) => {
   // event listers
   const documentResponse = await axios({
@@ -69,12 +71,13 @@ export const actionCreateNewDocument = async (
       acceesstoken: state.accessToken,
     },
     data: {
+      projectId: projectId,
       title: `New Document`,
       markdown: "",
     },
   });
 
-  await actionLoadDocuments(state, dispatch);
+  await actionLoadDocuments(state, dispatch, projectId);
 
   dispatch({
     type: ActionTypes.setCurrentDocument,
@@ -167,7 +170,7 @@ export const actionDeleteDocument = async (
 
   isDocumentChanged = false;
 
-  actionLoadDocuments(state, dispatch);
+  actionLoadDocuments(state, dispatch, document.projectId);
 };
 
 export const actionRenderMenu = async (

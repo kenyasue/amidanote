@@ -7,4 +7,5 @@ export enum ActionTypes {
   signIn = "signIn",
   typeKeyword = "typeKeyword",
   loadProjects = "loadProjects",
+  setCurrentProjectId = "setCurrentProjectId",
 }

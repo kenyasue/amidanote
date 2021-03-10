@@ -1,7 +1,7 @@
 import useSWR, { mutate } from "swr";
 import type { document as Document } from "@prisma/client";
 import { useState, useEffect } from "react";
-
+import { useRouter } from "next/router";
 import { Menu } from "antd";
 
 const { SubMenu } = Menu;
@@ -27,11 +27,12 @@ const component = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [activeDocumentIds, setActiveDocumentIds] = useState(["0"]);
   const [menuTree, setMenuTree] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     if (!state.userSignedIn) return;
-    actionLoadDocuments();
-  }, []);
+    actionLoadDocuments(state.currentProjectId);
+  }, [state.currentProjectId]);
 
   useEffect(() => {
     if (state.documents && state.documents.length > 0) {
@@ -145,16 +146,3 @@ const component = () => {
 };
 
 export default component;
-/*menuTree.map((document: Document) => {
-            return (
-              <Menu.Item
-                key={document.id}
-                onClick={() => {
-                  actionChangeCurrentDocument(document);
-                }}
-              >
-                {document.title}
-              </Menu.Item>
-            );
-          })
-*/

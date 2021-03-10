@@ -13,6 +13,7 @@ export interface GlobalState {
   accessToken: string;
   documentSearchKeyword: string;
   projects: Array<project>;
+  currentProjectId: number;
 }
 
 export interface Action {
@@ -43,6 +44,9 @@ const reduce = (state: any, action: any) => {
 
     case ActionTypes.typeKeyword:
       return { ...state, documentSearchKeyword: action.payload };
+
+    case ActionTypes.setCurrentProjectId:
+      return { ...state, currentProjectId: action.payload };
 
     default:
       return state;

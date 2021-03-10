@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 import {
   Tooltip,
@@ -31,13 +32,20 @@ import useActions from "../../actions/useActions";
 
 export default function Home() {
   const [documentUpdated, setDocumentUpdated] = useState(false);
+  const router = useRouter();
 
   const {
     actionChangeCurrentDocument,
     actionCreateNewDocument,
     actionChangeKeyword,
+    actionSetCurrentProjectId
   } = useActions();
   const state = useStateContext();
+
+    useEffect(() => {
+      actionSetCurrentProjectId(router.query.projectId)
+    }, []);
+  
 
   useEffect(() => {
     if (documentUpdated) {
@@ -77,7 +85,7 @@ export default function Home() {
                   size="middle"
                   onClick={(e) => {
                     setDocumentUpdated(true);
-                    actionCreateNewDocument();
+                    actionCreateNewDocument(router.query.projectId);
                   }}
                 />
               </Tooltip>

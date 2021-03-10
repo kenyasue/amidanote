@@ -83,7 +83,7 @@ describe("/api/document[POST]", () => {
 
     const response = await client
       .post("/api/document")
-      .send({ markdown: "test", title: "test" });
+      .send({ markdown: "test", title: "test", projectId: global.projectId1 });
 
     expect(response.status).to.eqls(200);
   });

@@ -28,14 +28,14 @@ export default async function documentHandler(
  * @swagger
  * /api/document:
  *  get:
- *     summary: Get all documents
+ *     summary: Get all documents of the user
  *     providers:
  *       "application/json"
  *     responses:
  *      '403':
  *        forbidden
  *      '200':
- *        description: A list of Documents
+ *        description: A list of Documents of the user
  *        content:
  *          application/json:
  *            schema:
@@ -49,10 +49,16 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await checkAuth(req.headers.acceesstoken as string);
   if (!user) return res.status(403).send("Forbidden");
 
+  const projectId: number = parseInt(req.query.project as string);
+
+  const conditions: any = {
+    userId: user.id,
+  };
+
+  if (projectId) conditions.projectId = projectId;
+
   const allDocuments = await prisma.document.findMany({
-    where: {
-      userId: user.id,
-    },
+    where: conditions,
     orderBy: [
       {
         title: "asc",
@@ -99,10 +105,29 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await checkAuth(req.headers.acceesstoken as string);
   if (!user) return res.status(403).send("Forbidden");
 
+  console.log(req.body);
+
   const markdown: string = req.body.markdown;
   const title: string = req.body.title;
+  const projectId: number = parseInt(req.body.projectId);
 
   if (utils.isEmpty(title)) return res.status(400).send("title is required");
+  if (!projectId) return res.status(400).send("projectId is required");
+
+  // check the user own the project
+  const projectResult = await prisma.project.findFirst({
+    where: {
+      id: projectId,
+    },
+    orderBy: [
+      {
+        id: "asc",
+      },
+    ],
+  });
+
+  if (!projectResult || projectResult.userId !== user.id)
+    if (!projectId) return res.status(400).send("Wrong project id");
 
   const newDocument = await prisma.document.create({
     data: {
@@ -110,6 +135,9 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
       markdown: markdown,
       user: {
         connect: { id: user.id },
+      },
+      project: {
+        connect: { id: projectId },
       },
     },
   });

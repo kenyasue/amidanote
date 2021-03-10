@@ -56,12 +56,12 @@ describe("/api/project [GET]", () => {
     expect(response.status).to.eqls(403);
   });
 
-  it("responds 200 and 0 elements as success", async () => {
+  it("responds 200 and 1 elements as success", async () => {
     const client = await testClientInvalidUser(handler, {});
     const response = await client.get(`/api/project`);
     expect(response.status).to.eqls(200);
     expect(response.body).to.be.an("array");
-    expect(response.body.length).to.eqls(0);
+    expect(response.body.length).to.eqls(1);
   });
 });
 

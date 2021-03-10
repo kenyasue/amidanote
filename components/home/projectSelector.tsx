@@ -32,7 +32,7 @@ import ProjectSelector from "../../components/home/projectSelector";
 import useActions from "../../actions/useActions";
 
 const component = () => {
-  const { actionLoadProjects } = useActions();
+  const { actionLoadProjects, actionSetCurrentProjectId } = useActions();
   const router = useRouter();
   const state = useStateContext();
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
@@ -115,6 +115,7 @@ const component = () => {
 
   const selectProject = async (projectId: number) => {
     console.log(projectId);
+    actionSetCurrentProjectId(projectId);
     router.push(`/project/${projectId}`);
   };
 

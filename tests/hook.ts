@@ -37,12 +37,39 @@ before(async () => {
     },
   });
 
+  // create project1
+  const project1 = await prisma.project.create({
+    data: {
+      name: "project1",
+      isPrivate: true,
+      user: {
+        connect: { id: user1.id },
+      },
+    },
+  });
+
+  const project2 = await prisma.project.create({
+    data: {
+      name: "project2",
+      isPrivate: true,
+      user: {
+        connect: { id: user2.id },
+      },
+    },
+  });
+
+  global.projectId1 = project1.id;
+  global.projectId2 = project2.id;
+
   for (let i = 0; i < 10; i++) {
     const doc = await prisma.document.create({
       data: {
         markdown: "test",
         user: {
           connect: { id: user1.id },
+        },
+        project: {
+          connect: { id: project1.id },
         },
       },
     });
@@ -57,6 +84,9 @@ before(async () => {
         user: {
           connect: { id: user2.id },
         },
+        project: {
+          connect: { id: project2.id },
+        },
       },
     });
 
@@ -67,8 +97,8 @@ before(async () => {
 after(async () => {
   // remove all documents and finish
 
-  await prisma.project.deleteMany();
   await prisma.document.deleteMany();
+  await prisma.project.deleteMany();
   await prisma.session.deleteMany();
   await prisma.user.deleteMany();
 

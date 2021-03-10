@@ -85,14 +85,17 @@ const component = () => {
           isPrivate: isPrivate,
         },
       });
+
+      setIsProcessing(false);
+      actionLoadProjects();
+      closeNewProjectModal();
+
+      actionSetCurrentProjectId(projectResponse.data.id);
+      router.push(`/project/${projectResponse.data.id}`);
     } catch (e) {
       console.error(e);
       setIsProcessing(false);
     }
-
-    setIsProcessing(false);
-    actionLoadProjects();
-    closeNewProjectModal();
   };
 
   const closeNewProjectModal = () => {
@@ -114,7 +117,6 @@ const component = () => {
   };
 
   const selectProject = async (projectId: number) => {
-    console.log(projectId);
     actionSetCurrentProjectId(projectId);
     router.push(`/project/${projectId}`);
   };
@@ -123,8 +125,9 @@ const component = () => {
     <>
       <Tooltip title="Select Project">
         <Select
-          defaultValue={state.projects ? state.projects[0].id : null}
+          defaultValue={state.currentProjectId ? state.currentProjectId : null}
           style={{ width: "calc(100% - 108px)" }}
+          value={state.currentProjectId ? state.currentProjectId : null}
           onChange={(e) => selectProject(e)}
         >
           {state.projects

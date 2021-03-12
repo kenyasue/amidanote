@@ -122,6 +122,9 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
   if (document === null) return res.status(404).send("Document not found");
   if (document.userId !== user.id) return res.status(403).send("forbidden");
 
+  console.log("title", title);
+  console.log("markdown", markdown);
+
   const updatedDocument = await prisma.document.update({
     where: { id: documentId },
     data: {

@@ -54,10 +54,12 @@ export const actionChangeCurrentDocument = async (
 
   dispatch({
     type: ActionTypes.setCurrentDocument,
-    payload: document,
+    payload: state.documents.find((doc) => doc.id == document.id),
   });
 
   isDocumentChanged = false;
+
+  window.history.replaceState(null, "", `?doc=${document.id}`);
 };
 
 export const actionCreateNewDocument = async (
@@ -87,6 +89,8 @@ export const actionCreateNewDocument = async (
   });
 
   actionChangeActiveTab(state, dispatch, "edit");
+
+  window.history.replaceState(null, "", `?doc=${documentResponse.data.id}`);
 };
 
 export const actionChangeActiveTab = (
@@ -98,6 +102,8 @@ export const actionChangeActiveTab = (
     type: ActionTypes.setActiveTab,
     payload: tabName,
   });
+
+  console.log("isDocumentChanged", isDocumentChanged);
 
   if (isDocumentChanged) {
     isDocumentChanged = false;
@@ -121,6 +127,8 @@ export const actionSaveCurrentDocument = async (
       markdown: document.markdown,
     },
   });
+
+  actionUpdateCurrentDocument(state, dispatch, document, true);
 };
 
 export const actionUpdateCurrentDocument = async (

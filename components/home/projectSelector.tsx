@@ -48,7 +48,7 @@ const component = () => {
 
   useEffect(() => {
     actionLoadProjects();
-  }, []);
+  }, [state.accessToken]);
 
   const newProject = async () => {
     let isError = false;

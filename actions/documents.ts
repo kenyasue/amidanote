@@ -39,8 +39,6 @@ export const actionLoadDocuments = async (
     },
   });
 
-  console.log("documentResponse.data", documentResponse.data);
-
   dispatch({
     type: ActionTypes.loadDocuments,
     payload: documentResponse.data,
@@ -104,8 +102,6 @@ export const actionChangeActiveTab = (
     type: ActionTypes.setActiveTab,
     payload: tabName,
   });
-
-  console.log("isDocumentChanged", isDocumentChanged);
 
   if (isDocumentChanged) {
     isDocumentChanged = false;

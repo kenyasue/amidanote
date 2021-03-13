@@ -36,27 +36,39 @@ export default function Header({ providers = {} }: { providers: any }) {
       /\?callbackUrl/.test(window.location.toString())
     )
       setShowLogin(true);
+    else if (!session && !loading) {
+      // when user is not logged in
 
-    // redirect to home after signin
-    if (session && router.pathname === "/") {
+      const projectIdInURL: number = parseInt(router.query.projectId as string);
+
       (async () => {
-        actionSignIn(session.user, session.accessToken);
-
-        // get default project
-        const defaultProject = await axios({
+        const project = await axios({
           method: "get",
-          url: "/api/project/default",
-          headers: {
-            acceesstoken: session.accessToken,
-          },
+          url: `/api/project/${projectIdInURL}`,
         });
-
-        router.push(`/project/${defaultProject.data.id}`);
       })();
     }
 
-    // redirect to index if not signed in
-    if (!session && router.pathname !== "/") router.push("/");
+    // redirect to home after signin
+    else if (session) {
+      (async () => {
+        actionSignIn(session.user, session.accessToken);
+
+        if (router.pathname === "/") {
+          // get default project
+          const defaultProject = await axios({
+            method: "get",
+            url: "/api/project/default",
+            headers: {
+              acceesstoken: session.accessToken,
+            },
+          });
+
+          router.push(`/project/${defaultProject.data.id}`);
+        } else {
+        }
+      })();
+    }
   }, [loading]);
 
   return (

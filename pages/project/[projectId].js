@@ -42,9 +42,9 @@ export default function Home() {
   } = useActions();
   const state = useStateContext();
 
-    useEffect(() => {
+  useEffect(() => {
       actionSetCurrentProjectId(router.query.projectId)
-    }, []);
+    }, [state.projects]);
   
 
   useEffect(() => {

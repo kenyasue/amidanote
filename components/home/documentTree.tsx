@@ -36,7 +36,16 @@ const component = () => {
 
   useEffect(() => {
     if (state.documents) {
-      if (isInitialLoad) actionChangeCurrentDocument(state.documents[0]);
+      if (isInitialLoad) {
+        const docIdInUrl: number = parseInt(router.query.doc as string);
+
+        const docInUrl: Document = state.documents.find(
+          (doc) => doc.id == docIdInUrl
+        );
+
+        if (docInUrl) actionChangeCurrentDocument(docInUrl);
+        else actionChangeCurrentDocument(state.documents[0]);
+      }
       setIsInitialLoad(false);
       constructMenu(state.documents);
     }

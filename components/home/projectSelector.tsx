@@ -116,23 +116,35 @@ const component = () => {
     setIsProcessing(false);
   };
 
-  const selectProject = async (projectId: number) => {
+  const selectProject = async (projectName: string) => {
+    const projectId: number = state.projects.find(
+      (prj) => prj.name === projectName
+    ).id;
+
     actionSetCurrentProjectId(projectId);
     router.push(`/project/${projectId}`);
   };
+
+  let selectedProject = null;
+
+  if (state.projects) {
+    selectedProject = state.projects.find(
+      (prj) => prj.id == state.currentProjectId
+    );
+  }
 
   return (
     <>
       <Tooltip title="Select Project">
         <Select
-          defaultValue={state.currentProjectId ? state.currentProjectId : null}
+          defaultValue={selectedProject ? selectedProject.name : null}
           style={{ width: "calc(100% - 108px)" }}
-          value={state.currentProjectId ? state.currentProjectId : null}
+          value={selectedProject ? selectedProject.name : null}
           onChange={(e) => selectProject(e)}
         >
           {state.projects
             ? state.projects.map((project) => (
-                <Option value={project.id} key={project.id}>
+                <Option value={project.name} key={project.id}>
                   {project.name}
                 </Option>
               ))

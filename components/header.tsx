@@ -39,9 +39,9 @@ export default function Header({ providers = {} }: { providers: any }) {
 
     // redirect to home after signin
     if (session && router.pathname === "/") {
-      actionSignIn(session.user, session.accessToken);
-
       (async () => {
+        actionSignIn(session.user, session.accessToken);
+
         // get default project
         const defaultProject = await axios({
           method: "get",

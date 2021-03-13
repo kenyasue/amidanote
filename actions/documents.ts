@@ -29,6 +29,8 @@ export const actionLoadDocuments = async (
   dispatch: Dispatch<Action>,
   projectId: number
 ) => {
+  if (!projectId) return;
+
   const documentResponse = await axios({
     method: "get",
     url: `/api/document?project=${projectId}`,

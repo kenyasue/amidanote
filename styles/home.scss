@@ -1,7 +1,18 @@
 @import "./vars.scss";
 
 .home {
-  height: calc(100vh - (#{$headerHeight} + 2px) * 2);
+
+  @include pc {
+    height: calc(100vh - (#{$headerHeight} + 2px) * 2);
+  };
+
+  @include tab {
+    height: calc(100vh - (#{$headerHeight} + 2px) * 2);
+  };
+
+  @include sp {
+    height: auto;
+  };
 
   .sider {
     background-color: #141414;
@@ -29,10 +40,26 @@
     }
 
     .preview-top {
-      height: calc(100vh - (#{$headerHeight} + 2px) * 2 - 61px - 12px);
-      overflow-y: auto;
-      overflow-x: hidden;
+
       padding-bottom: 24px;
+
+        @include pc {
+          height: calc(100vh - (#{$headerHeight} + 2px) * 2 - 61px - 12px);
+          overflow-y: auto;
+          overflow-x: hidden;
+        };
+
+        @include tab {
+          height: calc(100vh - (#{$headerHeight} + 2px) * 2 - 61px - 12px);
+          overflow-y: auto;
+          overflow-x: hidden;
+        };
+
+        @include sp {
+          height: auto;
+          overflow-x: hidden;
+        };
+        
     }
     .markdown-view {
       .title-hodler {
@@ -281,5 +308,7 @@
         z-index: 110;
       };
     }
-  
+
+
+
 }

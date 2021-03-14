@@ -112,7 +112,7 @@ export default function Home() {
             </Col>
           </Row>
         </Col>
-        <Col xs={{ span: 24 }} sm={{ span: 18 }} className="padding-1 main">
+        <Col xs={{ span: 24 }} md={{ span: 18 }} className="padding-1 main">
           {utils.isMobile() ?
             <DoubleRightOutlined className="show-sidebar-btn" onClick={() => setShowMenuResponsive(!showMenuResponsive)}/>
             : null}

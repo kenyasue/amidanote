@@ -19,6 +19,7 @@ import {
   SettingOutlined,
   FileAddOutlined,
   DiffOutlined,
+  DoubleRightOutlined
 } from "@ant-design/icons";
 
 import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
@@ -29,9 +30,11 @@ import ContentView from "../../components/home/conetntView";
 import ProjectSelector from "../../components/home/projectSelector";
 
 import useActions from "../../actions/useActions";
+import utils from "../../lib/util";
 
 export default function Home() {
   const [documentUpdated, setDocumentUpdated] = useState(false);
+  const [showMenuResponsive,setShowMenuResponsive] = useState(false);
   const router = useRouter();
 
   const {
@@ -46,12 +49,24 @@ export default function Home() {
       actionSetCurrentProjectId(router.query.projectId)
     }, [state.projects]);
   
-
   useEffect(() => {
     if (documentUpdated) {
       setDocumentUpdated(false);
     }
   }, [state.documents]);
+
+  useEffect(() => {
+    setShowMenuResponsive(false);
+  }, [state.selectedDocument]);
+
+  const layoutStyles = {};
+  if (utils.isMobile()) {
+
+    if(showMenuResponsive)
+      layoutStyles.left = "0vw";
+    else
+      layoutStyles.left = "-100vw";
+  }
 
   return (
     <>
@@ -61,7 +76,7 @@ export default function Home() {
         </Col>
       </Row>
       <Row className="home">
-        <Col span={6} className="sider">
+        <Col style={layoutStyles} xs={{ span: 24 }} sm={{ span: 6 }} className="sider">
           <Row className="sider-header">
             <Col span={24} className="padding-left-1 ">
               <ProjectSelector />
@@ -97,7 +112,10 @@ export default function Home() {
             </Col>
           </Row>
         </Col>
-        <Col span={18} className="padding-1 main">
+        <Col xs={{ span: 24 }} sm={{ span: 18 }} className="padding-1 main">
+          {utils.isMobile() ?
+            <DoubleRightOutlined className="show-sidebar-btn" onClick={() => setShowMenuResponsive(!showMenuResponsive)}/>
+            : null}
           <ContentView></ContentView>
         </Col>
       </Row>

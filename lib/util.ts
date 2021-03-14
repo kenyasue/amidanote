@@ -36,7 +36,6 @@ export default class utils {
 
   static waitToUpdate = (obj: any, paramName: string) => {
     const initialObj = obj[paramName];
-    console.log(obj, paramName, obj[paramName]);
 
     return new Promise((res) => {
       const timer = setInterval(() => {
@@ -47,5 +46,13 @@ export default class utils {
         }
       }, 1000);
     });
+  };
+
+  static isMobile = (): boolean => {
+    if (process.browser) {
+      return window.innerWidth < 768;
+    }
+
+    return false;
   };
 }

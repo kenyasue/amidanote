@@ -7,6 +7,10 @@
 @import "./top.scss";
 @import "./codemirror.scss";
 
+html {
+  touch-action: manipulation
+}
+
 body {
   font-size: 18px !important;
   font-family: "Roboto", sans-serif;

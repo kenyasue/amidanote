@@ -7,3 +7,22 @@
 $defaultSpacing: 12px;
 $headerHeight: 64px;
 $borderColor: #303030;
+
+$pc: 1024px; // PC
+$sp: 768px; // smartphone
+
+@mixin pc {
+  @media (max-width: ($pc)) {
+    @content;
+  }
+}
+@mixin tab {
+  @media (max-width: ($tab)) {
+    @content;
+  }
+}
+@mixin sp {
+  @media (max-width: ($sp)) {
+    @content;
+  }
+}

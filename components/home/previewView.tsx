@@ -1,6 +1,9 @@
 import { Typography, Row, Col, Divider, Button, Space } from "antd";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
+import remarkCodeFrontmatter from "remark-code-frontmatter";
+import highlight from "remark-syntax-highlight";
+import highlightJS from "highlight.js";
 
 const { Title } = Typography;
 import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
@@ -23,7 +26,22 @@ const component = () => {
       <Row gutter={[16, 16]} className="preview-top">
         <Col span={24} className="preview">
           <Title level={2}>{title}</Title>
-          <ReactMarkdown plugins={[gfm]}>
+          <ReactMarkdown
+            plugins={[
+              gfm,
+              remarkCodeFrontmatter,
+              [
+                highlight,
+                {
+                  highlight: (code: any) => {
+                    return highlightJS.highlightAuto(code).value;
+                  },
+                },
+              ],
+            ]}
+            linkTarget="_blank"
+            allowDangerousHtml={true}
+          >
             {state.selectedDocument.markdown}
           </ReactMarkdown>
         </Col>

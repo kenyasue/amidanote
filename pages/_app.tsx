@@ -3,6 +3,7 @@ import "../styles/global.scss";
 import type { AppProps /*, AppContext */ } from "next/app";
 import { Provider } from "next-auth/client";
 import Head from "next/head";
+import "highlight.js/styles/tomorrow-night.css";
 
 import { useReducer } from "react";
 import { appStateContext, dispatcherContext } from "../lib/reducer/context";

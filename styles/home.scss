@@ -93,11 +93,14 @@
       color: #ccc;
       font-size: 1.5em;
 
+      hr {
+        border-color: $borderColor;;
+      }
       table {
-        border: 1px solid #555;
+        border: 1px solid $borderColor;
         td,
         th {
-          border: 1px solid #555;
+          border: 1px solid $borderColor;;
           padding: 10px;
         }
       }
@@ -107,9 +110,6 @@
         text-decoration: underline;
       }
 
-      a[href]:after {
-        content: " (" attr(href) ")";
-      }
 
       abbr[title]:after {
         content: " (" attr(title) ")";
@@ -122,7 +122,7 @@
 
       pre,
       blockquote {
-        border: 1px solid #999;
+        border-left: 2px solid $borderColor;;
         page-break-inside: avoid;
       }
 
@@ -155,12 +155,14 @@
     pre,
     code {
       font-family: Menlo, Monaco, "Courier New", monospace;
+      background-color: #141414;
+      font-size: 0.8em;
     }
 
     pre {
       padding: 0.5rem;
       line-height: 1.25;
-      overflow-x: scroll;
+      overflow-x: auto;
     }
 
     a,
@@ -261,20 +263,19 @@
     h1,
     h2,
     h3 {
-      border-bottom: 2px solid #fafafa;
       margin-bottom: 1.15rem;
       padding-bottom: 0.5rem;
       text-align: left;
     }
 
     blockquote {
-      border-left: 8px solid #fafafa;
+      border-left: 8px solid $borderColor;;
       padding: 1rem;
     }
 
     pre,
     code {
-      background-color: #fafafa;
+      background-color: #141414;
     }
   }
 

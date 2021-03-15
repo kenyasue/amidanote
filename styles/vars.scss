@@ -13,7 +13,7 @@ $tab: 1024px; // tab
 $sp: 768px; // smartphone
 
 @mixin pc {
-  @media (max-width: ($pc)) {
+  @media (min-width: ($pc)) {
     @content;
   }
 }

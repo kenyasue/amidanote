@@ -34,7 +34,8 @@ import utils from "../../lib/util";
 
 export default function Home() {
   const [documentUpdated, setDocumentUpdated] = useState(false);
-  const [showMenuResponsive,setShowMenuResponsive] = useState(false);
+  const [showMenuResponsive, setShowMenuResponsive] = useState(false);
+  const [showPreview,setShowPreview] = useState(true);
   const router = useRouter();
 
   const {
@@ -58,6 +59,17 @@ export default function Home() {
   useEffect(() => {
     setShowMenuResponsive(false);
   }, [state.selectedDocument]);
+
+  useEffect(() => {
+    
+    if(showMenuResponsive)
+      setTimeout(() => {
+        setShowPreview(false);
+      }, 500); // css transition is 0.5sec
+    else
+      setShowPreview(true);
+    
+  }, [showMenuResponsive]);
 
   const layoutStyles = {};
   if (utils.isMobile()) {
@@ -112,11 +124,13 @@ export default function Home() {
             </Col>
           </Row>
         </Col>
-        <Col xs={{ span: 24 }} md={{ span: 18 }} className="padding-1 main">
+        <Col xs={{ span: 24 }} md={{ span: 18 }} className="padding-1 main" >
           {utils.isMobile() ?
             <DoubleRightOutlined className="show-sidebar-btn" onClick={() => setShowMenuResponsive(!showMenuResponsive)}/>
             : null}
-          <ContentView></ContentView>
+          <div style={{ display: showPreview ? "block" : "none" }}>
+            <ContentView></ContentView>
+          </div>
         </Col>
       </Row>
       <Row className="footer">

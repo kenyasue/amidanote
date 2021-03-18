@@ -71,9 +71,9 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
 /**
  * @swagger
- * /api/document/{id}:
+ * /api/project/{id}:
  *  put:
- *     summary: Edit a document
+ *     summary: Edit a project
  *     parameters:
  *       - in: path
  *         name: id
@@ -84,21 +84,20 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
  *           schema:
  *             type: object
  *             properties:
- *               markdown:
+ *               name:
  *                 type: string
- *               folderId:
- *                 type: integer
+ *               isPrivate:
+ *                 type: boolean
  *             example:   # Sample object
- *               title: "test"
- *               markdown: "test"
- *               folderId: 0
+ *               name: "test"
+ *               isPrivate: true
  *     responses:
  *       '200':
  *         description: OK
  *         content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/Document'
+ *                $ref: '#/components/schemas/Project'
  *       '400':
  *         description: Wrong paramter
  */
@@ -108,43 +107,40 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await checkAuth(req.headers.acceesstoken as string);
   if (!user) return res.status(403).send("Forbidden");
 
+  console.log("req.query", req.query);
   const id: string = req.query.id as string;
-  const documentId: number = parseInt(id);
+  const projectId: number = parseInt(id);
 
-  const markdown: string = req.body.markdown;
-  const title: string = req.body.title;
-  const folderId: number = req.body.folderId;
+  const name: string = req.body.name;
+  const isPrivate: boolean = req.body.isPrivate ? req.body.isPrivate : false;
 
-  if (utils.isEmpty(title)) return res.status(400).send("title is required");
+  if (utils.isEmpty(name)) return res.status(400).send("name is required");
 
-  const document = await prisma.document.findFirst({
+  const project = await prisma.project.findFirst({
     where: {
-      id: documentId,
+      id: projectId,
     },
   });
 
-  if (document === null) return res.status(404).send("Document not found");
-  if (document.userId !== user.id) return res.status(403).send("forbidden");
+  if (project === null) return res.status(404).send("Document not found");
+  if (project.userId !== user.id) return res.status(403).send("forbidden");
 
-  console.log("title", title);
-  console.log("markdown", markdown);
-
-  const updatedDocument = await prisma.document.update({
-    where: { id: documentId },
+  const updatedProject = await prisma.project.update({
+    where: { id: projectId },
     data: {
-      title: title,
-      markdown: markdown,
+      name: name,
+      isPrivate: isPrivate,
     },
   });
 
-  res.json(updatedDocument);
+  res.json(updatedProject);
 };
 
 /**
  * @swagger
- * /api/document/{id}:
+ * /api/project/{id}:
  *  delete:
- *     summary: Delete a document
+ *     summary: Delete a project
  *     parameters:
  *       - in: path
  *         name: id
@@ -162,19 +158,24 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!user) return res.status(403).send("Forbidden");
 
   const id: string = req.query.id as string;
-  const documentId: number = parseInt(id);
+  const projectId: number = parseInt(id);
 
-  const document = await prisma.document.findFirst({
+  const project = await prisma.project.findFirst({
     where: {
-      id: documentId,
+      id: projectId,
     },
   });
 
-  if (document === null) return res.status(404).send("Document not found");
-  if (document.userId !== user.id) return res.status(403).send("forbidden");
+  if (project === null) return res.status(404).send("Project not found");
+  if (project.userId !== user.id) return res.status(403).send("forbidden");
 
-  const deleteCount = await prisma.document.delete({
-    where: { id: documentId },
+  // delete all documents first
+  await prisma.document.deleteMany({
+    where: { projectId: projectId },
+  });
+
+  const deleteCount = await prisma.project.delete({
+    where: { id: projectId },
   });
 
   res.send("OK");

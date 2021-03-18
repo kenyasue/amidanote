@@ -313,7 +313,9 @@ const component = () => {
           <Button
             key="back"
             disabled={
-              isProcessing || isProcessingDelete || state.projects.length === 1
+              isProcessing ||
+              isProcessingDelete ||
+              (state.projects && state.projects.length) === 1
             }
             type="default"
             danger

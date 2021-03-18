@@ -49,13 +49,14 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await checkAuth(req.headers.acceesstoken as string);
   if (!user) return res.status(403).send("Forbidden");
 
-  const projectId: number = parseInt(req.query.project as string);
+  let projectId: number = 0;
+  if (req.query) projectId = parseInt(req.query.project as string);
 
   const conditions: any = {
     userId: user.id,
   };
 
-  if (projectId) conditions.projectId = projectId;
+  if (projectId !== 0) conditions.projectId = projectId;
 
   const allDocuments = await prisma.document.findMany({
     where: conditions,

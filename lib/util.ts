@@ -49,7 +49,7 @@ export default class utils {
   };
 
   static isMobile = (): boolean => {
-    if (process.browser) {
+    if (typeof window !== "undefined") {
       return window.innerWidth < 768;
     }
 

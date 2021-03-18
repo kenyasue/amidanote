@@ -36,6 +36,7 @@ const component = () => {
   const router = useRouter();
   const state = useStateContext();
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  const [showEditProjectModal, setShowEditProjectModal] = useState(false);
   const [validationResult, setValidationResult] = useState({
     projectname: {
       success: true,
@@ -45,6 +46,7 @@ const component = () => {
   const [projectName, setProjectName] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isProcessingDelete, setIsProcessingDelete] = useState(false);
 
   useEffect(() => {
     actionLoadProjects();
@@ -92,6 +94,88 @@ const component = () => {
 
       actionSetCurrentProjectId(projectResponse.data.id);
       router.push(`/project/${projectResponse.data.id}`);
+    } catch (e) {
+      console.error(e);
+      setIsProcessing(false);
+    }
+  };
+
+  const updateProject = async () => {
+    let isError = false;
+
+    const validationResult = {
+      projectname: {
+        success: true,
+        errorText: " ",
+      },
+    };
+
+    if (projectName.length === 0) {
+      validationResult.projectname.success = false;
+      validationResult.projectname.errorText = "Please input project name";
+      isError = true;
+    }
+
+    setValidationResult(validationResult);
+
+    if (isError) return;
+
+    // start updating project
+    setIsProcessing(true);
+
+    try {
+      const projectResponse = await axios({
+        method: "put",
+        url: `/api/project/${state.currentProjectId}`,
+        headers: {
+          acceesstoken: state.accessToken,
+        },
+        data: {
+          name: projectName,
+          isPrivate: isPrivate,
+        },
+      });
+
+      setIsProcessing(false);
+      actionLoadProjects();
+      setShowEditProjectModal(false);
+      actionSetCurrentProjectId(projectResponse.data.id);
+    } catch (e) {
+      console.error(e);
+      setIsProcessing(false);
+    }
+  };
+
+  const deleteProject = async () => {
+    let isError = false;
+
+    // start updating project
+    setIsProcessingDelete(true);
+
+    if (!confirm("Are you sure to delete this project ? ")) return;
+
+    try {
+      const projectResponse = await axios({
+        method: "delete",
+        url: `/api/project/${state.currentProjectId}`,
+        headers: {
+          acceesstoken: state.accessToken,
+        },
+      });
+
+      // get default project
+      const defaultProject = await axios({
+        method: "get",
+        url: "/api/project/default",
+        headers: {
+          acceesstoken: state.accessToken,
+        },
+      });
+
+      setIsProcessingDelete(false);
+      actionLoadProjects();
+      setShowEditProjectModal(false);
+      router.push(`/project/${defaultProject.data.id}`);
     } catch (e) {
       console.error(e);
       setIsProcessing(false);
@@ -158,17 +242,25 @@ const component = () => {
           icon={<SettingOutlined />}
           style={{ width: 48, marginLeft: 6 }}
           size="middle"
-          onClick={(e) => {}}
+          onClick={(e) => {
+            setProjectName(state.selectedProject && state.selectedProject.name);
+            setIsPrivate(
+              state.selectedProject && state.selectedProject.isPrivate
+            );
+            setShowEditProjectModal(true);
+          }}
         />
       </Tooltip>
 
-      <Tooltip title="New Project">
+      <Tooltip title="Edit Project">
         <Button
           type="primary"
           icon={<DiffOutlined />}
           style={{ width: 48, marginLeft: 6 }}
           size="middle"
           onClick={(e) => {
+            setProjectName("");
+            setIsPrivate(true);
             setShowNewProjectModal(true);
           }}
         />
@@ -183,6 +275,69 @@ const component = () => {
         cancelButtonProps={{
           disabled: isProcessing,
         }}
+      >
+        <Row gutter={[16, 24]}>
+          <Col span={8}>Project Name</Col>
+          <Col span={10}>
+            <Input
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              className={
+                !validationResult.projectname.success ? "errorForm" : ""
+              }
+            />
+            <div className="errorText">
+              {validationResult.projectname.errorText}
+            </div>
+          </Col>
+          <Col span={8}>Private</Col>
+          <Col span={10}>
+            <Switch
+              onChange={(checked) => setIsPrivate(checked)}
+              checked={isPrivate}
+            />
+          </Col>
+        </Row>
+      </Modal>
+
+      <Modal
+        title="Edit Project"
+        visible={showEditProjectModal}
+        onOk={(e) => updateProject()}
+        onCancel={(e) => setShowEditProjectModal(false)}
+        confirmLoading={isProcessing}
+        cancelButtonProps={{
+          disabled: isProcessing,
+        }}
+        footer={[
+          <Button
+            key="back"
+            disabled={
+              isProcessing || isProcessingDelete || state.projects.length === 1
+            }
+            type="default"
+            danger
+            loading={isProcessingDelete}
+            onClick={(e) => deleteProject()}
+          >
+            Delete
+          </Button>,
+          <Button
+            key="back"
+            disabled={isProcessing}
+            onClick={(e) => setShowEditProjectModal(false)}
+          >
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={isProcessing}
+            onClick={(e) => updateProject()}
+          >
+            OK
+          </Button>,
+        ]}
       >
         <Row gutter={[16, 24]}>
           <Col span={8}>Project Name</Col>

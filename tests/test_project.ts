@@ -5,6 +5,7 @@ import {
 } from "./testClient";
 import handler from "../pages/api/project";
 import handler2 from "../pages/api/project/default";
+import handler3 from "../pages/api/project/[id]";
 
 import { expect } from "chai";
 import global from "./global";
@@ -87,5 +88,79 @@ describe("/api/project/default [GET]", () => {
     expect(response.body).to.be.an("object");
 
     expect(response.body).to.have.own.property("id");
+  });
+});
+
+describe("/api/project[PUT]", () => {
+  it("responds 200 as success", async () => {
+    const client = await testClient(handler3, {
+      query: {
+        id: global.projectId1,
+      },
+    });
+
+    const response = await client
+      .put(`/api/project/${global.projectId1}`)
+      .send({ name: "test", isPrivate: false });
+
+    expect(response.status).to.eqls(200);
+  });
+});
+
+describe("/api/project[PUT]", () => {
+  it("responds 403 as success", async () => {
+    const client = await testClient(handler3, {
+      query: {
+        id: global.projectId2,
+      },
+    });
+
+    const response = await client
+      .put(`/api/project/${global.projectId2}`)
+      .send({ name: "test", isPrivate: false });
+
+    expect(response.status).to.eqls(403);
+  });
+});
+
+describe("/api/project[DELETE]", () => {
+  it("responds 200 as success", async () => {
+    const client = await testClient(handler3, {
+      query: {
+        id: global.projectId1,
+      },
+    });
+
+    const response = await client.delete(`/api/project/${global.projectId1}`);
+
+    expect(response.status).to.eqls(200);
+  });
+});
+
+describe("/api/project[DELETE]", () => {
+  it("responds 404 as success", async () => {
+    const client = await testClient(handler3, {
+      query: {
+        id: 123123123,
+      },
+    });
+
+    const response = await client.delete(`/api/project/${global.projectId1}`);
+
+    expect(response.status).to.eqls(404);
+  });
+});
+
+describe("/api/project[DELETE]", () => {
+  it("responds 403 as success", async () => {
+    const client = await testClient(handler3, {
+      query: {
+        id: global.projectId2,
+      },
+    });
+
+    const response = await client.delete(`/api/project/${global.projectId2}`);
+
+    expect(response.status).to.eqls(403);
   });
 });

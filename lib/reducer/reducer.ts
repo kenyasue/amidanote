@@ -14,6 +14,7 @@ export interface GlobalState {
   documentSearchKeyword: string;
   projects: Array<project>;
   currentProjectId: number;
+  selectedProject: project;
 }
 
 export interface Action {
@@ -26,7 +27,16 @@ const reduce = (state: any, action: any) => {
     case ActionTypes.loadDocuments:
       return { ...state, documents: action.payload };
     case ActionTypes.loadProjects:
-      return { ...state, projects: action.payload };
+      const projectTmp = action.payload.find(
+        (prj: project) => prj.id == state.currentProjectId
+      );
+
+      console.log("loadProjects", projectTmp);
+      return {
+        ...state,
+        projects: action.payload,
+        selectedProject: projectTmp,
+      };
     case ActionTypes.setCurrentDocument:
       return { ...state, selectedDocument: { ...action.payload } };
     case ActionTypes.triggerSave:
@@ -46,7 +56,15 @@ const reduce = (state: any, action: any) => {
       return { ...state, documentSearchKeyword: action.payload };
 
     case ActionTypes.setCurrentProjectId:
-      return { ...state, currentProjectId: action.payload };
+      const project =
+        state.projects &&
+        state.projects.find((prj: project) => prj.id == action.payload);
+
+      return {
+        ...state,
+        currentProjectId: action.payload,
+        selectedProject: project,
+      };
 
     default:
       return state;

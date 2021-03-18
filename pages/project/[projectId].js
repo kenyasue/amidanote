@@ -134,7 +134,7 @@ export default function Home() {
         </Col>
       </Row>
       <Row className="footer">
-        <Col span={24} className="padding-1">
+        <Col span={24} className="padding-1"> 
           <Footer />
         </Col>
       </Row>

@@ -71,6 +71,7 @@ before(async () => {
   global.projectId1 = project1.id;
   global.projectId2 = project2.id;
   global.projectId3 = project3.id;
+  global.projectName3 = project3.name;
 
   for (let i = 0; i < 10; i++) {
     const doc = await prisma.document.create({

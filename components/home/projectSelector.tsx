@@ -11,6 +11,7 @@ import {
   Modal,
   Switch,
   Form,
+  message,
 } from "antd";
 const { Option } = Select;
 
@@ -30,6 +31,7 @@ import ContentView from "../../components/home/conetntView";
 import ProjectSelector from "../../components/home/projectSelector";
 
 import useActions from "../../actions/useActions";
+import utils from "../../lib/util";
 
 const component = () => {
   const { actionLoadProjects, actionSetCurrentProjectId } = useActions();
@@ -209,6 +211,20 @@ const component = () => {
     router.push(`/project/${projectId}`);
   };
 
+  const copyURL = (url: string) => {
+    const el = document.createElement("textarea");
+    el.value = url;
+    el.setAttribute("readonly", "");
+    el.style.position = "absolute";
+    el.style.left = "-9999px";
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+
+    message.info("URL copied to clipboard.");
+  };
+
   let selectedProject = null;
 
   if (state.projects) {
@@ -216,6 +232,13 @@ const component = () => {
       (prj) => prj.id == state.currentProjectId
     );
   }
+
+  const urlInfo = utils.isBrowser() ? new URL(location.href) : null;
+  const publicURL = state.selectedProject
+    ? `${urlInfo.origin}/u/${state.selectedProject.userId}/${encodeURIComponent(
+        state.selectedProject.name
+      )}`
+    : "";
 
   return (
     <>
@@ -342,6 +365,23 @@ const component = () => {
         ]}
       >
         <Row gutter={[16, 24]}>
+          {!isPrivate ? (
+            <>
+              <Col span={8}>Public URL</Col>
+              <Col span={16}>
+                {state.selectedProject ? (
+                  <Tooltip title="Click to copy">
+                    <a
+                      href="javascript:void(0)"
+                      onClick={(e) => copyURL(publicURL)}
+                    >
+                      {utils.truncateString(publicURL, 32)}
+                    </a>
+                  </Tooltip>
+                ) : null}
+              </Col>
+            </>
+          ) : null}
           <Col span={8}>Project Name</Col>
           <Col span={10}>
             <Input

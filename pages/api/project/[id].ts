@@ -45,25 +45,39 @@ export default async function documentHandler(
  *                $ref: '#/components/schemas/Project'
  */
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
-  // check accesstoken
-  if (!req.headers.acceesstoken) return res.status(403).send("Forbidden");
-  const user = await checkAuth(req.headers.acceesstoken as string);
-  if (!user) return res.status(403).send("Forbidden");
-
   const id: string = req.query.id as string;
-  const projectId: number = parseInt(id);
+  let projectId: number = parseInt(id);
+  let projectName: string = id.toString();
 
-  const project = await prisma.project.findFirst({
-    where: {
-      id: projectId,
-    },
-  });
+  let project = projectId
+    ? await prisma.project.findFirst({
+        where: {
+          id: projectId,
+        },
+      })
+    : null;
+
+  // when project name comes in stead of id
+  if (!project) {
+    project = await prisma.project.findFirst({
+      where: {
+        name: projectName,
+      },
+    });
+
+    if (project) projectId = project.id;
+  }
 
   if (project === null) return res.status(404).send("Project not found");
 
-  // handle access permission
-  if (project.isPrivate === true && project.userId !== user.id)
-    return res.status(403).send("forbidden");
+  if (project.isPrivate === true) {
+    // check accesstoken
+    if (!req.headers.acceesstoken) return res.status(403).send("Forbidden");
+    const user = await checkAuth(req.headers.acceesstoken as string);
+    if (!user) return res.status(403).send("Forbidden");
+
+    if (project.userId !== user.id) return res.status(403).send("forbidden");
+  }
 
   res.json(project);
 };

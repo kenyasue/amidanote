@@ -58,8 +58,19 @@ before(async () => {
     },
   });
 
+  const project3 = await prisma.project.create({
+    data: {
+      name: "project3",
+      isPrivate: false,
+      user: {
+        connect: { id: user1.id },
+      },
+    },
+  });
+
   global.projectId1 = project1.id;
   global.projectId2 = project2.id;
+  global.projectId3 = project3.id;
 
   for (let i = 0; i < 10; i++) {
     const doc = await prisma.document.create({
@@ -91,6 +102,21 @@ before(async () => {
     });
 
     if (i == 0) global.documentIdNoAccess = doc.id;
+  }
+
+  // public project has 5 documents
+  for (let i = 0; i < 5; i++) {
+    const doc = await prisma.document.create({
+      data: {
+        markdown: "test",
+        user: {
+          connect: { id: user1.id },
+        },
+        project: {
+          connect: { id: project3.id },
+        },
+      },
+    });
   }
 });
 

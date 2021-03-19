@@ -45,28 +45,27 @@ export default async function documentHandler(
  *                $ref: '#/components/schemas/Project'
  */
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
-  /*
   // check accesstoken
   if (!req.headers.acceesstoken) return res.status(403).send("Forbidden");
   const user = await checkAuth(req.headers.acceesstoken as string);
   if (!user) return res.status(403).send("Forbidden");
-  */
 
   const id: string = req.query.id as string;
   const projectId: number = parseInt(id);
 
-  const document = await prisma.project.findFirst({
+  const project = await prisma.project.findFirst({
     where: {
       id: projectId,
     },
   });
 
-  if (document === null) return res.status(404).send("Document not found");
+  if (project === null) return res.status(404).send("Project not found");
 
   // handle access permission
-  //if (document.userId !== user.id) return res.status(403).send("forbidden");
+  if (project.isPrivate === true && project.userId !== user.id)
+    return res.status(403).send("forbidden");
 
-  res.json(document);
+  res.json(project);
 };
 
 /**
@@ -107,7 +106,6 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await checkAuth(req.headers.acceesstoken as string);
   if (!user) return res.status(403).send("Forbidden");
 
-  console.log("req.query", req.query);
   const id: string = req.query.id as string;
   const projectId: number = parseInt(id);
 

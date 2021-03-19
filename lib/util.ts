@@ -55,4 +55,15 @@ export default class utils {
 
     return false;
   };
+
+  static isBrowser = (): boolean => {
+    return typeof window !== "undefined";
+  };
+
+  static truncateString = (str: string, limit: number = 16): string => {
+    let suffix = "";
+    if (str.length > limit) suffix = "...";
+
+    return str.substr(0, limit) + suffix;
+  };
 }

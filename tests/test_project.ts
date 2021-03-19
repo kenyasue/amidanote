@@ -11,7 +11,7 @@ import { expect } from "chai";
 import global from "./global";
 
 describe("/api/project[POST]", () => {
-  it("responds 200 as success", async () => {
+  it("Create project", async () => {
     const client = await testClient(handler);
 
     const response = await client
@@ -20,10 +20,8 @@ describe("/api/project[POST]", () => {
 
     expect(response.status).to.eqls(200);
   });
-});
 
-describe("/api/project[POST]", () => {
-  it("responds 400", async () => {
+  it("Create project invalid param", async () => {
     const client = await testClient(handler);
 
     const response = await client.post("/api/project").send({});
@@ -31,7 +29,7 @@ describe("/api/project[POST]", () => {
     expect(response.status).to.eqls(400);
   });
 
-  it("responds 403 as success", async () => {
+  it("Create project invalid access token", async () => {
     const client = await testClientNoAccessToken(handler);
 
     const response = await client
@@ -43,7 +41,7 @@ describe("/api/project[POST]", () => {
 });
 
 describe("/api/project [GET]", () => {
-  it("responds 200 as success", async () => {
+  it("Get all project", async () => {
     const client = await testClient(handler, {});
     const response = await client.get(`/api/project`);
     expect(response.status).to.eqls(200);
@@ -51,13 +49,13 @@ describe("/api/project [GET]", () => {
     expect(response.body.length).is.greaterThan(0);
   });
 
-  it("responds 403 as forbidden", async () => {
+  it("Get all project no access token", async () => {
     const client = await testClientNoAccessToken(handler, {});
     const response = await client.get(`/api/project`);
     expect(response.status).to.eqls(403);
   });
 
-  it("responds 200 and 1 elements as success", async () => {
+  it("Get al projects", async () => {
     const client = await testClientInvalidUser(handler, {});
     const response = await client.get(`/api/project`);
     expect(response.status).to.eqls(200);
@@ -67,7 +65,7 @@ describe("/api/project [GET]", () => {
 });
 
 describe("/api/project/default [GET]", () => {
-  it("responds 200 as success", async () => {
+  it("Get default project", async () => {
     const client = await testClient(handler2, {});
     const response = await client.get(`/api/project/default`);
     expect(response.status).to.eqls(200);
@@ -75,7 +73,7 @@ describe("/api/project/default [GET]", () => {
     expect(response.body).to.have.own.property("id");
   });
 
-  it("responds 403 as forbidden", async () => {
+  it("Get default project no access token", async () => {
     const client = await testClientNoAccessToken(handler2, {});
     const response = await client.get(`/api/project/default`);
     expect(response.status).to.eqls(403);
@@ -88,6 +86,75 @@ describe("/api/project/default [GET]", () => {
     expect(response.body).to.be.an("object");
 
     expect(response.body).to.have.own.property("id");
+  });
+});
+
+describe("/api/project[GET]", () => {
+  it("Get project detail", async () => {
+    const client = await testClient(handler3, {
+      query: {
+        id: global.projectId1,
+      },
+    });
+
+    const response = await client
+      .get(`/api/project/${global.projectId1}`)
+      .send({ name: "test", isPrivate: false });
+
+    expect(response.status).to.eqls(200);
+  });
+
+  it("Get project detail no access token", async () => {
+    const client = await testClientInvalidUser(handler3, {
+      query: {
+        id: global.projectId1,
+      },
+    });
+
+    const response = await client
+      .get(`/api/project/${global.projectId1}`)
+      .send({ name: "test", isPrivate: false });
+
+    expect(response.status).to.eqls(403);
+  });
+
+  it("Get project detail invalid id", async () => {
+    const client = await testClient(handler3, {
+      query: {
+        id: 121212313,
+      },
+    });
+
+    const response = await client
+      .get(`/api/project/${global.projectId1}`)
+      .send({ name: "test", isPrivate: false });
+
+    expect(response.status).to.eqls(404);
+  });
+
+  it("Get project detail which is public", async () => {
+    const client = await testClientInvalidUser(handler3, {
+      query: {
+        id: global.projectId3,
+      },
+    });
+
+    const response = await client.get(`/api/project/${global.projectId1}`);
+
+    expect(response.status).to.eqls(200);
+  });
+
+  it("Get project detail which is public from name", async () => {
+    const client = await testClientInvalidUser(handler3, {
+      query: {
+        id: global.projectName3,
+      },
+    });
+
+    const response = await client.get(`/api/project/${global.projectName3}`);
+
+    expect(response.status).to.eqls(200);
+    expect(response.body.name).to.eqls(global.projectName3);
   });
 });
 
@@ -105,9 +172,7 @@ describe("/api/project[PUT]", () => {
 
     expect(response.status).to.eqls(200);
   });
-});
 
-describe("/api/project[PUT]", () => {
   it("responds 403 as success", async () => {
     const client = await testClient(handler3, {
       query: {
@@ -135,9 +200,7 @@ describe("/api/project[DELETE]", () => {
 
     expect(response.status).to.eqls(200);
   });
-});
 
-describe("/api/project[DELETE]", () => {
   it("responds 404 as success", async () => {
     const client = await testClient(handler3, {
       query: {
@@ -149,9 +212,7 @@ describe("/api/project[DELETE]", () => {
 
     expect(response.status).to.eqls(404);
   });
-});
 
-describe("/api/project[DELETE]", () => {
   it("responds 403 as success", async () => {
     const client = await testClient(handler3, {
       query: {

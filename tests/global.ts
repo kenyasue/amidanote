@@ -7,4 +7,6 @@ export default {
   accountId2: "100587356807478683449",
   projectId1: 0,
   projectId2: 0,
+  projectId3: 0,
+  projectName3: "",
 };

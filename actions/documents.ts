@@ -59,7 +59,7 @@ export const actionChangeCurrentDocument = async (
 
   isDocumentChanged = false;
 
-  window.history.replaceState(null, "", `?doc=${document.id}`);
+  if (document) window.history.replaceState(null, "", `?doc=${document.id}`);
 };
 
 export const actionCreateNewDocument = async (

@@ -45,28 +45,41 @@ export default async function documentHandler(
  *                $ref: '#/components/schemas/Project'
  */
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
-  /*
-  // check accesstoken
-  if (!req.headers.acceesstoken) return res.status(403).send("Forbidden");
-  const user = await checkAuth(req.headers.acceesstoken as string);
-  if (!user) return res.status(403).send("Forbidden");
-  */
-
   const id: string = req.query.id as string;
-  const projectId: number = parseInt(id);
+  let projectId: number = parseInt(id);
+  let projectName: string = id.toString();
 
-  const document = await prisma.project.findFirst({
-    where: {
-      id: projectId,
-    },
-  });
+  let project = projectId
+    ? await prisma.project.findFirst({
+        where: {
+          id: projectId,
+        },
+      })
+    : null;
 
-  if (document === null) return res.status(404).send("Document not found");
+  // when project name comes in stead of id
+  if (!project) {
+    project = await prisma.project.findFirst({
+      where: {
+        name: projectName,
+      },
+    });
 
-  // handle access permission
-  //if (document.userId !== user.id) return res.status(403).send("forbidden");
+    if (project) projectId = project.id;
+  }
 
-  res.json(document);
+  if (project === null) return res.status(404).send("Project not found");
+
+  if (project.isPrivate === true) {
+    // check accesstoken
+    if (!req.headers.acceesstoken) return res.status(403).send("Forbidden");
+    const user = await checkAuth(req.headers.acceesstoken as string);
+    if (!user) return res.status(403).send("Forbidden");
+
+    if (project.userId !== user.id) return res.status(403).send("forbidden");
+  }
+
+  res.json(project);
 };
 
 /**
@@ -107,7 +120,6 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await checkAuth(req.headers.acceesstoken as string);
   if (!user) return res.status(403).send("Forbidden");
 
-  console.log("req.query", req.query);
   const id: string = req.query.id as string;
   const projectId: number = parseInt(id);
 

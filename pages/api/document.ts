@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, project } from "@prisma/client";
 const prisma = new PrismaClient();
 
 import utils from "../../lib/util";
@@ -44,19 +44,42 @@ export default async function documentHandler(
  *                $ref: '#/components/schemas/Document'
  */
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
-  // check accesstoken
-  if (!req.headers.acceesstoken) return res.status(403).send("Forbidden");
-  const user = await checkAuth(req.headers.acceesstoken as string);
-  if (!user) return res.status(403).send("Forbidden");
+  let user = null;
+
+  if (req.headers.acceesstoken)
+    user = await checkAuth(req.headers.acceesstoken as string);
 
   let projectId: number = 0;
-  if (req.query) projectId = parseInt(req.query.project as string);
+  if (req.query && req.query.project)
+    projectId = parseInt(req.query.project as string);
 
+  // check permission in case projectId is specified
   const conditions: any = {
-    userId: user.id,
+    userId: user ? user.id : 0,
   };
 
+  let project: project = null;
+
+  if (projectId !== 0) {
+    project = await prisma.project.findFirst({
+      where: {
+        id: projectId,
+      },
+    });
+
+    if (!project) return res.status(404).send("No Project");
+
+    if (project.isPrivate === true && (!user || project.userId !== user.id))
+      return res.status(403).send("Forbidden");
+
+    // switch owner use to project one in case project is public
+    if (project.isPrivate === false) conditions.userId = project.userId;
+  }
+
   if (projectId !== 0) conditions.projectId = projectId;
+
+  // access denied if no projectid and no access token
+  if (projectId === 0 && !user) return res.status(403).send("Forbidden");
 
   const allDocuments = await prisma.document.findMany({
     where: conditions,
@@ -66,6 +89,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     ],
   });
+
   res.send(allDocuments);
 };
 
@@ -105,8 +129,6 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!req.headers.acceesstoken) return res.status(403).send("Forbidden");
   const user = await checkAuth(req.headers.acceesstoken as string);
   if (!user) return res.status(403).send("Forbidden");
-
-  console.log(req.body);
 
   const markdown: string = req.body.markdown;
   const title: string = req.body.title;

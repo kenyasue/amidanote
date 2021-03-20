@@ -32,8 +32,11 @@ import Footer from "../../../components/footer";
 import useActions from "../../../actions/useActions";
 import utils from "../../../lib/util";
 
-const component = function Home({ project,documents }) {
+const component = function Home({ project,documents,document }) {
 
+  console.log("defaultDocument", document);
+
+  const defaultDocument = document;
   const [documentUpdated, setDocumentUpdated] = useState(false);
   const [showMenuResponsive, setShowMenuResponsive] = useState(false);
   const [showPreview,setShowPreview] = useState(true);
@@ -42,16 +45,18 @@ const component = function Home({ project,documents }) {
   const {
     actionLoadDocuments,
     actionChangeKeyword,
-    actionSetCurrentProjectId
+    actionSetCurrentProjectId,
+    actionChangeCurrentDocument
   } = useActions();
   const state = useStateContext();
 
   useEffect(() => {
-    if (!project) return router.push(`/`);
 
-
-    actionSetCurrentProjectId(project.id);
-    actionLoadDocuments(project.id);
+    if (!project) router.push(`/`);
+    else {
+      actionSetCurrentProjectId(project.id);
+      actionLoadDocuments(project.id);
+    }
 
   }, []);
 
@@ -111,7 +116,7 @@ const component = function Home({ project,documents }) {
             : null}
           <div style={{ display: showPreview ? "block" : "none" }}>
             
-            <PreviewView />
+            <PreviewView defaultDocument={defaultDocument} />
           </div>
         </Col>
       </Row>
@@ -127,13 +132,14 @@ const component = function Home({ project,documents }) {
 export async function getServerSideProps(context) {
 
   const { userId, projectName } = context.params
+  const docId = context.query.doc;
 
   try {
 
     // Fetch data from external API
     const projectResponse = await axios({
       method: "get",
-      url: `${process.env.BASE_URL}/api/project/${projectName}`
+      url: `${process.env.BASE_URL}/api/project/${encodeURIComponent(projectName)}`
     });
 
     if (projectResponse.data && projectResponse.data.id) {
@@ -144,12 +150,22 @@ export async function getServerSideProps(context) {
         url: `${process.env.BASE_URL}/api/document?project=${projectResponse.data.id}`
       });
 
-      // Pass data to the page via props
+      let document = null;
+
+
+      if (docId)
+        document = documentsResponse.data.find(obj => obj.id === parseInt(docId))
+      else
+        document = documentsResponse.data[0];
+      
+      const props = {
+        project: projectResponse.data,
+        documents: documentsResponse.data
+      };
+
+      if (document) props.document = document;
       return {
-        props: {
-          project: projectResponse.data,
-          documents: documentsResponse.data
-        }
+        props: props
       };
       
     } 
@@ -157,6 +173,7 @@ export async function getServerSideProps(context) {
     return { props: { project: null } }
 
   } catch (e) {
+    console.error(e);
     return { props: { project: null } }
   }
 

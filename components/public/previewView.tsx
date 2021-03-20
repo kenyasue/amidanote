@@ -1,4 +1,5 @@
 import { Typography, Row, Col, Divider, Button, Space } from "antd";
+import type { document as Document, project } from "@prisma/client";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
 import remarkCodeFrontmatter from "remark-code-frontmatter";
@@ -8,16 +9,22 @@ import highlightJS from "highlight.js";
 const { Title } = Typography;
 import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
 
-const component = () => {
+const component = ({ defaultDocument }: { defaultDocument: Document }) => {
   const state = useStateContext();
   const dispatch = useDispatchContext();
 
-  if (!state.selectedDocument) return <>Please select document.</>;
+  if (!state.selectedDocument || !defaultDocument)
+    return <>Please select document.</>;
+
+  const displayDocument: Document =
+    state.selectedDocument && state.selectedDocument.id
+      ? state.selectedDocument
+      : defaultDocument;
 
   let title = "";
 
-  if (state.selectedDocument && state.selectedDocument.title) {
-    const titleChunks = state.selectedDocument.title.split("/");
+  if (displayDocument && displayDocument.title) {
+    const titleChunks = displayDocument.title.split("/");
     title = titleChunks[titleChunks.length - 1];
   }
 
@@ -42,7 +49,7 @@ const component = () => {
             linkTarget="_blank"
             allowDangerousHtml={true}
           >
-            {state.selectedDocument.markdown}
+            {displayDocument.markdown}
           </ReactMarkdown>
         </Col>
       </Row>

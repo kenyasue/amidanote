@@ -29,6 +29,10 @@ const component = ({ documents }: { documents: Array<Document> }) => {
   const [menuTree, setMenuTree] = useState([]);
   const router = useRouter();
 
+  useEffect(() => {
+    if (documents) constructMenu(documents);
+  }, []);
+
   const constructMenu = (documents: Array<Document>) => {
     // build menu tree
     const menuTreeWork: any = {};
@@ -101,7 +105,7 @@ const component = ({ documents }: { documents: Array<Document> }) => {
 
   return (
     <Menu selectedKeys={activeDocumentIds} mode="inline" className="top-menu">
-      {documents ? renderMenu(documents) : renderMenu(menuTree)}
+      {menuTree ? renderMenu(menuTree) : null}
     </Menu>
   );
 };

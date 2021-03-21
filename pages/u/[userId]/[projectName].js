@@ -34,8 +34,6 @@ import utils from "../../../lib/util";
 
 const component = function Home({ project,documents,document }) {
 
-  console.log("defaultDocument", document);
-
   const defaultDocument = document;
   const [documentUpdated, setDocumentUpdated] = useState(false);
   const [showMenuResponsive, setShowMenuResponsive] = useState(false);

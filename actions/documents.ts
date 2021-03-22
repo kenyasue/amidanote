@@ -6,6 +6,7 @@ import useSWR, { mutate } from "swr";
 import { User } from "next-auth";
 import { ActionTypes } from "../lib/reducer/actionTypes";
 import Utils from "../lib/util";
+import * as notificationActions from "./notifications";
 
 let isDocumentChanged = false;
 
@@ -125,6 +126,9 @@ export const actionSaveCurrentDocument = async (
       markdown: document.markdown,
     },
   });
+
+  console.log("saved");
+  notificationActions.showInfo(state, dispatch, "Document saved");
 
   actionUpdateCurrentDocument(state, dispatch, document, true);
 };

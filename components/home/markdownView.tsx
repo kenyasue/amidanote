@@ -72,7 +72,7 @@ const component = () => {
             value={state.selectedDocument.markdown}
             options={{
               mode: "markdown",
-              theme: "material",
+              theme: "vscode-dark",
               lineNumbers: true,
             }}
             onBeforeChange={(editor, data, value) => {

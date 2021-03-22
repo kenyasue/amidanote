@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Notification from "../../components/Notification";
 
 import {
   Tooltip,
@@ -88,7 +89,7 @@ export default function Home() {
         </Col>
       </Row>
       <Row className="home">
-        <Col style={layoutStyles} xs={{ span: 24 }} sm={{ span: 6 }} className="sider">
+        <Col style={layoutStyles} xs={{ span: 24 }} sm={{ span: 6 }} className="sider ">
           <Row className="sider-header">
             <Col span={24} className="padding-left-1 ">
               <ProjectSelector />
@@ -124,7 +125,7 @@ export default function Home() {
             </Col>
           </Row>
         </Col>
-        <Col xs={{ span: 24 }} md={{ span: 18 }} className="padding-1 main" >
+        <Col xs={{ span: 24 }} md={{ span: 18 }} className="main" >
           {utils.isMobile() ?
             <DoubleRightOutlined className="show-sidebar-btn" onClick={() => setShowMenuResponsive(!showMenuResponsive)}/>
             : null}
@@ -138,6 +139,7 @@ export default function Home() {
           <Footer />
         </Col>
       </Row>
+      <Notification />
     </>
   );
 }

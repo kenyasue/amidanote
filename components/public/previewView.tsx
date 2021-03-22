@@ -30,7 +30,7 @@ const component = ({ defaultDocument }: { defaultDocument: Document }) => {
 
   return (
     <>
-      <Row gutter={[16, 16]} className="preview-top">
+      <Row className="preview-top">
         <Col span={24} className="preview">
           <Title level={2}>{title}</Title>
           <ReactMarkdown

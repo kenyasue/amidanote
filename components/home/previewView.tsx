@@ -25,7 +25,7 @@ const component = () => {
     <>
       <Row gutter={[16, 16]} className="preview-top">
         <Col span={24} className="preview">
-          <Title level={2}>{title}</Title>
+          <Title level={1}>{title}</Title>
           <ReactMarkdown
             plugins={[
               gfm,

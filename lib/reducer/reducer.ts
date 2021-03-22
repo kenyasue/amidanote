@@ -15,6 +15,7 @@ export interface GlobalState {
   projects: Array<project>;
   currentProjectId: number;
   selectedProject: project;
+  notificationMessageInfo: string;
 }
 
 export interface Action {
@@ -64,6 +65,12 @@ const reduce = (state: any, action: any) => {
         ...state,
         currentProjectId: action.payload,
         selectedProject: project,
+      };
+
+    case ActionTypes.showInfo:
+      return {
+        ...state,
+        notificationMessageInfo: action.payload,
       };
 
     default:

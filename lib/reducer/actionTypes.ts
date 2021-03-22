@@ -8,4 +8,5 @@ export enum ActionTypes {
   typeKeyword = "typeKeyword",
   loadProjects = "loadProjects",
   setCurrentProjectId = "setCurrentProjectId",
+  showInfo = "showInfo",
 }

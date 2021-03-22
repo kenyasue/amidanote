@@ -1,5 +1,11 @@
 @import "./vars.scss";
 
+.header-content {
+  h1 {
+    font-family: "Inter", sans-serif;
+    font-weight: 900;
+  }
+}
 .home {
   @include pc {
     height: calc(100vh - (#{$headerHeight} + 2px) * 2);
@@ -99,7 +105,7 @@
     .preview {
       color: #ccc;
       background-color: #141414;
-      font-size: 1.5em;
+      font-size: 1.2em;
 
       hr {
         border-color: $borderColor;
@@ -131,6 +137,7 @@
       blockquote {
         border-left: 2px solid $borderColor;
         page-break-inside: avoid;
+        font-size: 1.1rem;
       }
 
       thead {
@@ -220,31 +227,37 @@
     h4,
     h5,
     h6 {
-      font-family: Arimo, Helvetica, sans-serif;
+      font-family: "Inter", sans-serif;
     }
 
     h1 {
       font-size: 1.8rem;
+      font-weight: 800;
     }
 
     h2 {
       font-size: 1.6rem;
+      font-weight: 800;
     }
 
     h3 {
       font-size: 1.4rem;
+      font-weight: 700;
     }
 
     h4 {
       font-size: 1.3rem;
+      font-weight: 600;
     }
 
     h5 {
       font-size: 1.2rem;
+      font-weight: 600;
     }
 
     h6 {
       font-size: 1rem;
+      font-weight: 600;
     }
 
     h1,

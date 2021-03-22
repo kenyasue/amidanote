@@ -73,7 +73,7 @@ export default function Header({ providers = {} }: { providers: any }) {
 
   return (
     <div className="header-content">
-      <div className="title">Header</div>
+      <h1 className="title">Amidanote</h1>
       <div className="actions">
         {loading && <>Loading...</>}
         {!loading && !session && (

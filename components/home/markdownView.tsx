@@ -1,16 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Typography, Row, Col, Input, Button, Modal } from "antd";
-const { Title } = Typography;
-const { TextArea } = Input;
-import useSWR, { mutate } from "swr";
-import type { document as Document } from "@prisma/client";
+import { DeleteOutlined } from "@ant-design/icons";
 import { Controlled as CodeMirror } from "react-codemirror2";
 
 import useActions from "../../actions/useActions";
 import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
 import utils from "../../lib/util";
-import { util } from "chai";
 
 const component = () => {
   const state = useStateContext();
@@ -63,13 +59,23 @@ const component = () => {
               actionRenderMenu();
             }}
           />
-          <Button
-            danger
-            className="delete-btn"
-            onClick={() => setShowDeleteConfirmModal(true)}
-          >
-            Delete
-          </Button>
+
+          {utils.isMobile() ? (
+            <Button
+              danger
+              icon={<DeleteOutlined />}
+              className="delete-btn-small"
+              onClick={() => setShowDeleteConfirmModal(true)}
+            />
+          ) : (
+            <Button
+              danger
+              className="delete-btn"
+              onClick={() => setShowDeleteConfirmModal(true)}
+            >
+              Delete
+            </Button>
+          )}
         </Col>
         <Col span={24}>
           <CodeMirror

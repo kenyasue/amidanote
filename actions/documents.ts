@@ -127,7 +127,6 @@ export const actionSaveCurrentDocument = async (
     },
   });
 
-  console.log("saved");
   notificationActions.showInfo(state, dispatch, "Document saved");
 
   actionUpdateCurrentDocument(state, dispatch, document, true);
@@ -156,10 +155,12 @@ export const actionUpdateCurrentDocument = async (
     }
   }
 
+  /*
   dispatch({
     type: ActionTypes.setCurrentDocument,
     payload: document,
   });
+  */
 };
 
 export const actionDeleteDocument = async (

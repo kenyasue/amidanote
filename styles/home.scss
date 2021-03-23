@@ -90,6 +90,13 @@
           top: 30px;
           width: 150px;
         }
+
+        .delete-btn-small {
+          position: absolute;
+          right: 20px;
+          top: 30px;
+          width: 50px;
+        }
       }
 
       .markdown-input {
@@ -134,11 +141,24 @@
         content: "";
       }
 
-      pre,
       blockquote {
         border-left: 2px solid $borderColor;
         page-break-inside: avoid;
         font-size: 1.1rem;
+      }
+
+      pre {
+        page-break-inside: avoid;
+        font-size: 1.1rem;
+        border: 1px solid $borderColor;
+        padding: 0px;
+        margin: 8px;
+        padding-left: 8px;
+        background-color: #181818;
+
+        code {
+          background-color: #181818;
+        }
       }
 
       thead {

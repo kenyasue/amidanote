@@ -17,6 +17,7 @@ const component = () => {
   const dispatch = useDispatchContext();
 
   const [editorInstance, setEditorInstance] = useState(null);
+  const [editorContent, setEditorContent] = useState(null);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const {
     actionUpdateCurrentDocument,
@@ -40,8 +41,12 @@ const component = () => {
   }, [state.activeTab]);
 
   useEffect(() => {
-    console.log("editor instance set", editorInstance);
+    setEditorContent(state.selectedDocument.markdown);
   }, [editorInstance]);
+
+  useEffect(() => {
+    setEditorContent(state.selectedDocument.markdown);
+  }, [state.selectedDocument]);
 
   return (
     <>
@@ -69,13 +74,14 @@ const component = () => {
         <Col span={24}>
           <CodeMirror
             className="markdown-input"
-            value={state.selectedDocument.markdown}
+            value={editorContent}
             options={{
               mode: "markdown",
               theme: "vscode-dark",
               lineNumbers: true,
             }}
             onBeforeChange={(editor, data, value) => {
+              setEditorContent(value);
               state.selectedDocument.markdown = value;
               actionUpdateCurrentDocument(state.selectedDocument, false);
             }}

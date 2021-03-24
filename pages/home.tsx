@@ -20,7 +20,7 @@ import {
   DiffOutlined,
 } from "@ant-design/icons";
 
-import { useSession } from "next-auth/client";
+import { useSession, providers } from "next-auth/client";
 
 import { useStateContext, useDispatchContext } from "../lib/reducer/context";
 import TreeView from "../components/home/documentTree";
@@ -42,7 +42,7 @@ export default function Home() {
     <>
       <Row className="header">
         <Col span={24} className="padding-1">
-          <Header providers={{}} />
+          <Header providers={providers} />
         </Col>
       </Row>
       <Row className="home">

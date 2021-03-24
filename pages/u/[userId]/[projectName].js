@@ -26,13 +26,13 @@ import {
 import { useStateContext, useDispatchContext } from "../../../lib/reducer/context";
 import TreeView from "../../../components/public/documentTree";
 import PreviewView from "../../../components/public/previewView";
-import Header from "../../../components/public/header";
+import Header from "../../../components/header";
 import Footer from "../../../components/footer";
 
 import useActions from "../../../actions/useActions";
 import utils from "../../../lib/util";
 
-const component = function Home({ project,documents,document }) {
+const component = function Home({ project,documents,document,providers }) {
 
   const defaultDocument = document;
   const [documentUpdated, setDocumentUpdated] = useState(false);
@@ -86,7 +86,7 @@ const component = function Home({ project,documents,document }) {
     <>
       <Row className="header">
         <Col span={24} className="padding-1">
-          <Header providers={{}} />
+          <Header providers={{providers}} />
         </Col>
       </Row>
       <Row className="home public">

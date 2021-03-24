@@ -18,8 +18,8 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Session } from "inspector";
-import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
-import useActions from "../../actions/useActions";
+import { useStateContext, useDispatchContext } from "../lib/reducer/context";
+import useActions from "../actions/useActions";
 
 export default function Header({ providers = {} }: { providers: any }) {
   const [showLogin, setShowLogin] = useState(false);

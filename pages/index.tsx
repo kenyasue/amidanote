@@ -17,10 +17,10 @@ const { Search } = Input;
 import { FileAddOutlined } from "@ant-design/icons";
 
 import { useStateContext, useDispatchContext } from "../lib/reducer/context";
-import Header from "../components/top/header";
+import Header from "../components/header";
 import Footer from "../components/footer";
 
-export default function Home() {
+export default function Home({ providers }: { providers: any }) {
   const [documentUpdated, setDocumentUpdated] = useState(false);
   const state = useStateContext();
 
@@ -34,7 +34,7 @@ export default function Home() {
     <>
       <Row className="header">
         <Col span={24} className="padding-1">
-          <Header providers={{}} />
+          <Header providers={{ providers }} />
         </Col>
       </Row>
       <Row className="home">

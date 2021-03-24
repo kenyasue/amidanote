@@ -24,14 +24,14 @@ import { useSession, providers } from "next-auth/client";
 
 import { useStateContext, useDispatchContext } from "../lib/reducer/context";
 import TreeView from "../components/home/documentTree";
-import Header from "../components/home/header";
+import Header from "../components/header";
 import Footer from "../components/footer";
 import ContentView from "../components/home/conetntView";
 import ProjectSelector from "../components/home/projectSelector";
 
 import useActions from "../actions/useActions";
 
-export default function Home() {
+export default function Home({ providers }: { providers: any }) {
   const [documentUpdated, setDocumentUpdated] = useState(false);
   const [session, loading] = useSession();
 
@@ -42,7 +42,7 @@ export default function Home() {
     <>
       <Row className="header">
         <Col span={24} className="padding-1">
-          <Header providers={providers} />
+          <Header providers={{ providers }} />
         </Col>
       </Row>
       <Row className="home">

@@ -34,7 +34,7 @@ const options = {
     }),
   ],
   pages: {
-    signIn: "/home",
+    signIn: "/",
     signOut: "/",
     error: "/", // Error code passed in query string as ?error=
   },

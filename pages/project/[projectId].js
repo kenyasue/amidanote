@@ -25,7 +25,7 @@ import {
 
 import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
 import TreeView from "../../components/home/documentTree";
-import Header from "../../components/home/header";
+import Header from "../../components/header";
 import Footer from "../../components/footer";
 import ContentView from "../../components/home/conetntView";
 import ProjectSelector from "../../components/home/projectSelector";
@@ -33,7 +33,7 @@ import ProjectSelector from "../../components/home/projectSelector";
 import useActions from "../../actions/useActions";
 import utils from "../../lib/util";
 
-export default function Home() {
+export default function Home({ project,documents,document,providers }) {
   const [documentUpdated, setDocumentUpdated] = useState(false);
   const [showMenuResponsive, setShowMenuResponsive] = useState(false);
   const [showPreview,setShowPreview] = useState(true);
@@ -85,7 +85,7 @@ export default function Home() {
     <>
       <Row className="header">
         <Col span={24} className="padding-1">
-          <Header providers={{}} />
+          <Header providers={{providers}} />
         </Col>
       </Row>
       <Row className="home">

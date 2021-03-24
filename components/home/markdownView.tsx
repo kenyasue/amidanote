@@ -22,7 +22,13 @@ const component = () => {
   } = useActions();
 
   useEffect(() => {
-    if (editorInstance) editorInstance.focus();
+    console.log("state.activeTab", state.activeTab);
+    if (state.activeTab === "edit") {
+      if (editorInstance) editorInstance.focus();
+
+      console.log("state.selectedDocument", state.selectedDocument.title);
+      setEditorContent(state.selectedDocument.markdown);
+    }
 
     (async () => {
       state.selectedDocument.markdown = state.selectedDocument.markdown + " ";

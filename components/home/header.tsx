@@ -18,8 +18,8 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Session } from "inspector";
-import { useStateContext, useDispatchContext } from "../lib/reducer/context";
-import useActions from "../actions/useActions";
+import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
+import useActions from "../../actions/useActions";
 
 export default function Header({ providers = {} }: { providers: any }) {
   const [showLogin, setShowLogin] = useState(false);
@@ -38,15 +38,6 @@ export default function Header({ providers = {} }: { providers: any }) {
       setShowLogin(true);
     else if (!session && !loading) {
       // when user is not logged in
-
-      const projectIdInURL: number = parseInt(router.query.projectId as string);
-
-      (async () => {
-        const project = await axios({
-          method: "get",
-          url: `/api/project/${projectIdInURL}`,
-        });
-      })();
     }
 
     // redirect to home after signin
@@ -73,7 +64,9 @@ export default function Header({ providers = {} }: { providers: any }) {
 
   return (
     <div className="header-content">
-      <h1 className="title">Amidanote</h1>
+      <h1 className="title">
+        <a href="/">Amidanote</a>
+      </h1>
       <div className="actions">
         {loading && <>Loading...</>}
         {!loading && !session && (
@@ -99,6 +92,7 @@ export default function Header({ providers = {} }: { providers: any }) {
                     <a
                       onClick={() => {
                         signOut();
+                        router.push(`/`);
                       }}
                     >
                       Logout

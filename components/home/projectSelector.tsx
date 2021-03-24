@@ -25,7 +25,7 @@ import axios from "axios";
 
 import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
 import TreeView from "../../components/home/documentTree";
-import Header from "../../components/header";
+import Header from "./header";
 import Footer from "../../components/footer";
 import ContentView from "../../components/home/conetntView";
 import ProjectSelector from "../../components/home/projectSelector";

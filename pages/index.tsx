@@ -1,39 +1,45 @@
-import { useReducer } from "react";
-import { Layout, Row, Col, Input, Button, Space } from "antd";
+import { useEffect, useState } from "react";
+
 import {
-  signIn,
-  signOut,
-  useSession,
-  providers,
-  SessionProvider,
-} from "next-auth/client";
+  Tooltip,
+  Row,
+  Col,
+  Input,
+  Button,
+  Select,
+  Modal,
+  Switch,
+  Form,
+} from "antd";
+const { Option } = Select;
 
-import Home from "./home";
+const { Search } = Input;
+import { FileAddOutlined } from "@ant-design/icons";
 
-import { appStateContext, dispatcherContext } from "../lib/reducer/context";
-
-import Header from "../components/header";
+import { useStateContext, useDispatchContext } from "../lib/reducer/context";
+import Header from "../components/top/header";
 import Footer from "../components/footer";
 
-import reducer from "../lib/reducer/reducer";
+export default function Home() {
+  const [documentUpdated, setDocumentUpdated] = useState(false);
+  const state = useStateContext();
 
-export default function Index({ providers }: { providers: any }) {
-  const [state, dispatch] = useReducer(reducer, {
-    selectedDocument: {},
-    triggerSave: false,
-  });
+  useEffect(() => {
+    if (documentUpdated) {
+      setDocumentUpdated(false);
+    }
+  }, [state.documents]);
 
   return (
     <>
       <Row className="header">
         <Col span={24} className="padding-1">
-          <Header providers={providers} />
+          <Header providers={{}} />
         </Col>
       </Row>
-      <Row className="top">
-        <Col span={24} className="padding-1">
-          Welcome to undefined.md
-        </Col>
+      <Row className="home">
+        <Col span={6} className="sider"></Col>
+        <Col span={18} className="padding-1 main"></Col>
       </Row>
       <Row className="footer">
         <Col span={24} className="padding-1">
@@ -43,9 +49,3 @@ export default function Index({ providers }: { providers: any }) {
     </>
   );
 }
-
-Index.getInitialProps = async (context: SessionProvider) => {
-  return {
-    providers: await providers(),
-  };
-};

@@ -71,9 +71,10 @@ const component = () => {
   return (
     <Menu selectedKeys={activeDocumentIds} mode="inline" className="top-menu">
       {menuTree
-        ? renderMenu(menuTree, (document: Document) =>
-            actionChangeCurrentDocument(document)
-          )
+        ? renderMenu(menuTree, (document: Document) => {
+            console.log("click");
+            actionChangeCurrentDocument(document);
+          })
         : null}
     </Menu>
   );

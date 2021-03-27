@@ -38,23 +38,14 @@ export default function Header({ providers = {} }: { providers: any }) {
       setShowLogin(true);
     else if (!session && !loading) {
       // when user is not logged in
-
-      const projectIdInURL: number = parseInt(router.query.projectId as string);
-
-      (async () => {
-        const project = await axios({
-          method: "get",
-          url: `/api/project/${projectIdInURL}`,
-        });
-      })();
     }
 
     // redirect to home after signin
-    else if (session) {
+    else if (session && router.pathname !== "/") {
       (async () => {
         actionSignIn(session.user, session.accessToken);
 
-        if (router.pathname === "/") {
+        if (router.pathname === "/home") {
           // get default project
           const defaultProject = await axios({
             method: "get",
@@ -71,58 +62,86 @@ export default function Header({ providers = {} }: { providers: any }) {
     }
   }, [loading]);
 
+  useEffect(() => {
+    console.log("router.pathname", router.pathname);
+    if (router.pathname === "/home" && !session && !loading) {
+      signIn();
+    }
+  }, []);
+
   return (
     <div className="header-content">
-      <h1 className="title">Amidanote</h1>
+      <h1 className="title">
+        <a href="/">Amidanote</a>
+      </h1>
       <div className="actions">
-        {loading && <>Loading...</>}
-        {!loading && !session && (
+        {router.pathname === "/" || /^\/u\/.+$/.test(router.pathname) ? (
           <>
             <Button
               type="primary"
               icon={<LoginOutlined />}
               size="large"
               onClick={() => {
-                signIn();
+                router.push(`/home`);
               }}
             >
-              Login
+              Goto App
             </Button>
           </>
-        )}
-        {!loading && session && (
+        ) : (
           <>
-            <Dropdown
-              overlay={
-                <Menu>
-                  <Menu.Item>
-                    <a
-                      onClick={() => {
-                        signOut();
-                      }}
-                    >
-                      Logout
-                    </a>
-                  </Menu.Item>
-                </Menu>
-              }
-              placement="bottomRight"
-            >
-              <Button
-                type="text"
-                icon={
-                  <Avatar
-                    shape="square"
-                    size="small"
-                    icon={<UserOutlined />}
-                    src={session.user.image}
-                  />
-                }
-                size="large"
-              >
-                &nbsp; {session.user.name}
-              </Button>
-            </Dropdown>
+            {loading && <>Loading...</>}
+            {!loading && !session && (
+              <>
+                <Button
+                  type="primary"
+                  icon={<LoginOutlined />}
+                  size="large"
+                  onClick={() => {
+                    signIn();
+                  }}
+                >
+                  SignIn
+                </Button>
+              </>
+            )}
+            {!loading && session && (
+              <>
+                <Dropdown
+                  overlay={
+                    <Menu>
+                      <Menu.Item>
+                        <a
+                          onClick={() => {
+                            signOut({
+                              callbackUrl: "/",
+                            });
+                          }}
+                        >
+                          Logout
+                        </a>
+                      </Menu.Item>
+                    </Menu>
+                  }
+                  placement="bottomRight"
+                >
+                  <Button
+                    type="text"
+                    icon={
+                      <Avatar
+                        shape="square"
+                        size="small"
+                        icon={<UserOutlined />}
+                        src={session.user.image}
+                      />
+                    }
+                    size="large"
+                  >
+                    &nbsp; {session.user.name}
+                  </Button>
+                </Dropdown>
+              </>
+            )}
           </>
         )}
       </div>

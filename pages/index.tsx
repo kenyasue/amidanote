@@ -16,6 +16,7 @@ const { Option } = Select;
 const { Search } = Input;
 import { FileAddOutlined } from "@ant-design/icons";
 
+import { useSession, providers, SessionProvider } from "next-auth/client";
 import { useStateContext, useDispatchContext } from "../lib/reducer/context";
 import Header from "../components/header";
 import Footer from "../components/footer";
@@ -34,7 +35,7 @@ export default function Home({ providers }: { providers: any }) {
     <>
       <Row className="header">
         <Col span={24} className="padding-1">
-          <Header providers={{ providers }} />
+          <Header providers={providers} />
         </Col>
       </Row>
       <Row className="home">
@@ -49,3 +50,9 @@ export default function Home({ providers }: { providers: any }) {
     </>
   );
 }
+
+Home.getInitialProps = async (context: SessionProvider) => {
+  return {
+    providers: await providers(),
+  };
+};

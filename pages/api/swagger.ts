@@ -17,6 +17,37 @@ import path from "path";
  *
  * components:
  *   schemas:
+ *     File:
+ *       type: object
+ *       required:
+ *         - userId
+ *         - documentId
+ *         - projectId
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The auto-generated id of the document.
+ *        userId
+ *           type: integer
+ *           description: The owner of the document
+ *        documentId
+ *           type: integer
+ *           description: The document of the file belongs to
+ *        projectId
+ *           type: integer
+ *           description: The project of the file belongs to
+ *        modifiedAt:
+ *            type: string
+ *            format: datetime
+ *        modifiedAt:
+ *            type: string
+ *            format: datetime
+ *        modifiedAt:
+ *            type: string
+ *            format: datetime
+ *        createAt:
+ *           type: string
+ *           format: datetime
  *     Document:
  *       type: object
  *       required:

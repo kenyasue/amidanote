@@ -22,7 +22,6 @@ model document {
   modifiedAt  DateTime    @default(now())
 }
 
-
 model project {
   id          Int         @id @default(autoincrement())
   user        User        @relation(fields: [userId], references: [id])
@@ -31,6 +30,23 @@ model project {
   isPrivate   Boolean     @default(false)
   createdAt   DateTime    @default(now())
   modifiedAt  DateTime    @default(now())
+}
+
+model file {
+  id              Int         @id @default(autoincrement())
+  user            User        @relation(fields: [userId], references: [id])
+  userId          Int         @default(0)
+  project         project     @relation(fields: [projectId], references: [id])
+  projectId       Int         @default(0)
+  document        document    @relation(fields: [documentId], references: [id])
+  documentId      Int         @default(0)
+  path            String      @default("")
+  thumbnailPath   String      @default("")
+  size            Int         @default(0)
+  name            String      @default("")
+  mimeType        String      @default("")
+  createdAt       DateTime    @default(now())
+  modifiedAt      DateTime    @default(now())
 }
 
 model Account {

@@ -105,6 +105,20 @@ before(async () => {
     if (i == 0) global.documentIdNoAccess = doc.id;
   }
 
+  const doc = await prisma.document.create({
+    data: {
+      markdown: "test",
+      user: {
+        connect: { id: user1.id },
+      },
+      project: {
+        connect: { id: project1.id },
+      },
+    },
+  });
+
+  global.documentIdForFile = doc.id;
+
   // public project has 5 documents
   for (let i = 0; i < 5; i++) {
     const doc = await prisma.document.create({
@@ -124,6 +138,7 @@ before(async () => {
 after(async () => {
   // remove all documents and finish
 
+  await prisma.file.deleteMany();
   await prisma.document.deleteMany();
   await prisma.project.deleteMany();
   await prisma.session.deleteMany();

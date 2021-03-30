@@ -181,6 +181,11 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
   if (project === null) return res.status(404).send("Project not found");
   if (project.userId !== user.id) return res.status(403).send("forbidden");
 
+  // delete all files
+  await prisma.file.deleteMany({
+    where: { projectId: projectId },
+  });
+
   // delete all documents first
   await prisma.document.deleteMany({
     where: { projectId: projectId },

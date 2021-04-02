@@ -20,6 +20,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^5.0.1",
     "dayjs": "^1.8.28",
+    "dotenv-webpack": "^7.0.2",
     "esm": "^3.2.25",
     "formidable": "^1.2.2",
     "hexoid": "^1.0.0",

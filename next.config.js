@@ -7,6 +7,13 @@ module.exports = {
     // Pls fix this in the future
     ignoreBuildErrors: true,
   },
+  build: {
+      extend(config, {}) {
+          config.node = {
+              fs: 'empty'
+          }
+      }
+  },
   webpack: (config, { isServer,webpack }) => {
     // Fixes npm packages that depend on `fs` module
     if (!isServer) {

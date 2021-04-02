@@ -22,6 +22,7 @@
     "dayjs": "^1.8.28",
     "dotenv-webpack": "^7.0.2",
     "esm": "^3.2.25",
+    "filesize": "^6.1.0",
     "formidable": "^1.2.2",
     "hexoid": "^1.0.0",
     "highlight.js": "^10.6.0",

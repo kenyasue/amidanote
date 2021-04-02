@@ -51,7 +51,8 @@ export const actionChangeCurrentDocument = async (
   dispatch: Dispatch<Action>,
   document: Document
 ) => {
-  actionChangeActiveTab(state, dispatch, "preview");
+  if (state.activeTab === "edit")
+    actionChangeActiveTab(state, dispatch, "preview");
 
   dispatch({
     type: ActionTypes.setCurrentDocument,

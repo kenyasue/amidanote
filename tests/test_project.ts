@@ -143,19 +143,6 @@ describe("/api/project[GET]", () => {
 
     expect(response.status).to.eqls(200);
   });
-
-  it("Get project detail which is public from name", async () => {
-    const client = await testClientInvalidUser(handler3, {
-      query: {
-        id: global.projectName3,
-      },
-    });
-
-    const response = await client.get(`/api/project/${global.projectName3}`);
-
-    expect(response.status).to.eqls(200);
-    expect(response.body.name).to.eqls(global.projectName3);
-  });
 });
 
 describe("/api/project[PUT]", () => {

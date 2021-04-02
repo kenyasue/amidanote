@@ -1,6 +1,8 @@
 export default {
   documentIdToDelete: 0,
   documentIdNoAccess: 0,
+  documentIdForFile: 0,
+  documentIdPublic: 0,
   accessToken1: "aaa",
   accountId1: "100587356807478683448",
   accessToken2: "bbb",

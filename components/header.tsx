@@ -30,6 +30,11 @@ export default function Header({ providers = {} }: { providers: any }) {
   const { actionSignIn } = useActions();
 
   useEffect(() => {
+    if (/^\/u\/.+$/.test(router.pathname)) {
+      console.log("aaaa");
+      return;
+    }
+
     if (
       !loading &&
       !session &&

@@ -15,7 +15,7 @@ describe("/api/document [GET]", () => {
     const response = await client.get(`/api/document`);
     expect(response.status).to.eqls(200);
     expect(response.body).to.be.an("array");
-    expect(response.body.length).to.eqls(15);
+    expect(response.body.length).to.eqls(16);
   });
 
   it("responds 200 and 5 elements as success", async () => {
@@ -35,7 +35,7 @@ describe("/api/document [GET]", () => {
     const response = await client.get(`/api/document`);
     expect(response.status).to.eqls(200);
     expect(response.body).to.be.an("array");
-    expect(response.body.length).to.eqls(10);
+    expect(response.body.length).to.eqls(11);
   });
 
   it("Try to access private documents", async () => {

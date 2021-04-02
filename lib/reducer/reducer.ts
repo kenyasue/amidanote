@@ -16,6 +16,7 @@ export interface GlobalState {
   currentProjectId: number;
   selectedProject: project;
   notificationMessageInfo: string;
+  uploadProgress: number;
 }
 
 export interface Action {
@@ -71,6 +72,12 @@ const reduce = (state: any, action: any) => {
       return {
         ...state,
         notificationMessageInfo: action.payload,
+      };
+
+    case ActionTypes.setUploadProgress:
+      return {
+        ...state,
+        uploadProgress: action.payload,
       };
 
     default:

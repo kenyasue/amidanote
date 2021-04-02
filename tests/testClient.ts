@@ -5,7 +5,7 @@ import request from "supertest";
 import global from "./global";
 
 export const testClient = async (
-  handler: NextApiHandler,
+  handler: any,
   { host = "example.com", query = null }: { host?: string; query?: any } = {}
 ) =>
   request(
@@ -18,7 +18,7 @@ export const testClient = async (
   );
 
 export const testClientNoAccessToken = async (
-  handler: NextApiHandler,
+  handler: any,
   { host = "example.com", query = null }: { host?: string; query?: any } = {}
 ) =>
   request(
@@ -30,7 +30,7 @@ export const testClientNoAccessToken = async (
   );
 
 export const testClientInvalidUser = async (
-  handler: NextApiHandler,
+  handler: any,
   { host = "example.com", query = null }: { host?: string; query?: any } = {}
 ) =>
   request(

@@ -157,7 +157,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       method: "get",
       url: `${process.env.BASE_URL}/api/project/${encodeURIComponent(
         projectName as string
-      )}`,
+      )}&userId=${userId}`,
     });
 
     if (projectResponse.data && projectResponse.data.id) {

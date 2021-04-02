@@ -51,16 +51,32 @@ export default function Page({
   const router = useRouter();
 
   const {
-    actionChangeCurrentDocument,
+    actionLoadProjects,
     actionCreateNewDocument,
     actionChangeKeyword,
     actionSetCurrentProjectId,
+    actionLoadDocuments,
   } = useActions();
   const state = useStateContext();
 
+  // load projects when access token is ready
   useEffect(() => {
+    if (!state.accessToken) return;
+    actionLoadProjects();
+  }, [state.accessToken]);
+
+  // select project if project id is defined if not default project is load from header.tsx
+  useEffect(() => {
+    if (!state.projects) return;
     actionSetCurrentProjectId(parseInt(router.query.projectId as string));
   }, [state.projects]);
+
+  // load documents when project id is changed
+  useEffect(() => {
+    if (!state.currentProjectId) return;
+    if (!state.accessToken) return;
+    actionLoadDocuments(state.currentProjectId);
+  }, [state.currentProjectId]);
 
   useEffect(() => {
     if (documentUpdated) {
@@ -69,6 +85,7 @@ export default function Page({
   }, [state.documents]);
 
   useEffect(() => {
+    // hide menu when user select a document in mobile
     setShowMenuResponsive(false);
   }, [state.selectedDocument]);
 

@@ -1,5 +1,12 @@
 import axios from "axios";
 import { responseInterface } from "swr";
+import formidable, { File } from "formidable";
+import type { NextApiRequest, NextApiResponse } from "next";
+
+export interface FormData {
+  fields: any;
+  files: any;
+}
 
 export default class utils {
   static isEmpty = (val: string): boolean => {
@@ -65,5 +72,24 @@ export default class utils {
     if (str.length > limit) suffix = "...";
 
     return str.substr(0, limit) + suffix;
+  };
+
+  static parseForm = (request: NextApiRequest): Promise<FormData> => {
+    return new Promise((res, rej) => {
+      const form: formidable = new formidable.IncomingForm({
+        maxFieldsSize: parseInt(process.env.MAX_FILESIZE) * 1024 * 1024,
+      });
+
+      form.on("error", function (err: any) {
+        console.error(err);
+      });
+
+      form.on("end", function () {});
+
+      form.parse(request, (err, fields, files) => {
+        if (err) rej(err);
+        else res({ fields, files });
+      });
+    });
   };
 }

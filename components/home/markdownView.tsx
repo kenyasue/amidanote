@@ -22,7 +22,6 @@ const component = () => {
   } = useActions();
 
   useEffect(() => {
-    console.log("state.activeTab", state.activeTab);
     if (state.activeTab === "edit") {
       if (editorInstance) editorInstance.focus();
 

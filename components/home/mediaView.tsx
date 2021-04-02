@@ -17,6 +17,7 @@ import { ColumnsType } from "antd/es/table";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
 import dayjs from "dayjs";
+import filesize from "filesize";
 
 import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
 import useActions from "../../actions/useActions";
@@ -26,22 +27,28 @@ const columns: ColumnsType<file> = [
     title: "Name",
     key: "name",
     dataIndex: "name",
-  },
-  {
-    title: "Size",
-    key: "size",
-    dataIndex: "size",
+    width: "40%",
   },
   {
     title: "Type",
     key: "mimeType",
     dataIndex: "mimeType",
+    width: "30%",
+  },
+  {
+    title: "Size",
+    key: "size",
+    dataIndex: "size",
+    render: (text) => <span>{filesize(text)}</span>,
+    width: "10%",
   },
   {
     title: "Created",
     key: "createdAt",
     dataIndex: "createdAt",
     render: (text) => <span>{dayjs(text).format("YYYY/MM/DD HH:mm")}</span>,
+    width: "20%",
+    align: "right",
   },
 ];
 

@@ -50,10 +50,6 @@ const component = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isProcessingDelete, setIsProcessingDelete] = useState(false);
 
-  useEffect(() => {
-    actionLoadProjects();
-  }, [state.accessToken]);
-
   const newProject = async () => {
     let isError = false;
 
@@ -235,9 +231,7 @@ const component = () => {
 
   const urlInfo = utils.isBrowser() ? new URL(location.href) : null;
   const publicURL = state.selectedProject
-    ? `${urlInfo.origin}/u/${state.selectedProject.userId}/${encodeURIComponent(
-        state.selectedProject.name
-      )}`
+    ? `${urlInfo.origin}/u/${state.selectedProject.userId}/${state.selectedProject.id}`
     : "";
 
   return (

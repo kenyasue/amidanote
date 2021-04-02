@@ -9,4 +9,5 @@ export enum ActionTypes {
   loadProjects = "loadProjects",
   setCurrentProjectId = "setCurrentProjectId",
   showInfo = "showInfo",
+  setUploadProgress = "setUploadProgress",
 }

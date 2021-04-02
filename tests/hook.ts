@@ -1,4 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import global from "./global";
 
@@ -132,6 +132,8 @@ before(async () => {
         },
       },
     });
+
+    global.documentIdPublic = doc.id;
   }
 });
 

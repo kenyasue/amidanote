@@ -19,11 +19,7 @@ const component = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!state.userSignedIn) return;
-    actionLoadDocuments(state.currentProjectId);
-  }, [state.currentProjectId]);
-
-  useEffect(() => {
+    console.log("state.documents", state.documents);
     if (state.documents) {
       if (isInitialLoad) {
         const docIdInUrl: number = parseInt(router.query.doc as string);

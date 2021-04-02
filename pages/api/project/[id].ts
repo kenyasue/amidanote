@@ -46,8 +46,8 @@ export default async function documentHandler(
  */
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const id: string = req.query.id as string;
+  const userIdRes: string = req.query.userId as string;
   let projectId: number = parseInt(id);
-  let projectName: string = id.toString();
 
   let project = projectId
     ? await prisma.project.findFirst({
@@ -56,17 +56,6 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       })
     : null;
-
-  // when project name comes in stead of id
-  if (!project) {
-    project = await prisma.project.findFirst({
-      where: {
-        name: projectName,
-      },
-    });
-
-    if (project) projectId = project.id;
-  }
 
   if (project === null) return res.status(404).send("Project not found");
 

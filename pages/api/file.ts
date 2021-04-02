@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, document } from "@prisma/client";
+import { PrismaClient, document, User, project } from "@prisma/client";
 const prisma = new PrismaClient();
 import { copyFile, unlink, writeFile } from "fs/promises";
 import { File } from "formidable";
@@ -53,8 +53,101 @@ export const config = {
  *              items:
  *                $ref: '#/components/schemas/File'
  */
-const handleGet = async (_req: NextApiRequest, res: NextApiResponse) => {
-  res.status(200).send("OK");
+const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
+  const user: User = req.headers.acceesstoken
+    ? await checkAuth(req.headers.acceesstoken as string)
+    : null;
+
+  try {
+    let projectId: number =
+      req.query && req.query.project
+        ? parseInt(req.query.project as string)
+        : null;
+
+    let documentId: number =
+      req.query && req.query.document
+        ? parseInt(req.query.document as string)
+        : null;
+
+    if (!projectId && !documentId)
+      return res.status(400).send("projectId or documentId should declear");
+
+    let project: project = null;
+    let document: document = null;
+
+    if (documentId) {
+      document = await prisma.document.findFirst({
+        where: {
+          id: documentId,
+        },
+      });
+
+      // check existance
+      if (document === null) return res.status(404).send("Document not found");
+
+      const documentProject: project = await prisma.project.findFirst({
+        where: {
+          id: document.projectId,
+        },
+      });
+
+      // check existance of project
+      if (documentProject === null)
+        return res.status(404).send("Wrong document");
+
+      // check priviledges
+      if (!user && documentProject.isPrivate === true)
+        return res.status(403).send("Forbidden");
+
+      if (user && document.userId !== user.id)
+        return res.status(403).send("Forbidden");
+
+      const allFiles = await prisma.file.findMany({
+        where: {
+          documentId: documentId,
+        },
+        orderBy: [
+          {
+            createdAt: "asc",
+          },
+        ],
+      });
+
+      return res.send(allFiles);
+    } else if (projectId) {
+      project = await prisma.project.findFirst({
+        where: {
+          id: projectId,
+        },
+      });
+
+      // check existance
+      if (project === null) return res.status(404).send("Project not found");
+
+      // check priviledges
+      if (!user && project.isPrivate === true)
+        return res.status(403).send("Forbidden");
+
+      if (user && project.userId !== user.id)
+        return res.status(403).send("Forbidden");
+
+      const allFiles = await prisma.file.findMany({
+        where: {
+          projectId: projectId,
+        },
+        orderBy: [
+          {
+            createdAt: "asc",
+          },
+        ],
+      });
+
+      return res.send(allFiles);
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("server error");
+  }
 };
 
 /**
@@ -127,7 +220,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (/image/.test(originalFile.type)) {
       thumbFileName = `${utils.randomString(16)}.${extension}`;
-      thumbFilePath = `${process.env.UPLOADS_PATH}/${newFilename}`;
+      thumbFilePath = `${process.env.UPLOADS_PATH}/${thumbFileName}`;
 
       const thumbnailBuffer = await imageThumbnail(newPath, {
         width: 500,

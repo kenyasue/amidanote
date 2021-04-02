@@ -24,6 +24,8 @@ import {
   actionSetCurrentProjectId as _actionSetCurrentProjectId,
 } from "./projects";
 
+import { actionFileUpload as _actionFileUpload } from "./file";
+
 import { actionChangeKeyword as _actionChangeKeyword } from "./search";
 
 const component = () => {
@@ -67,6 +69,10 @@ const component = () => {
     },
     actionSetCurrentProjectId: (projectId: number) => {
       _actionSetCurrentProjectId(state, dispatch, projectId);
+    },
+
+    actionFileUpload: (file: File, documentId: number) => {
+      _actionFileUpload(state, dispatch, file, documentId);
     },
   };
 };

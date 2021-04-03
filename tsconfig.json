@@ -20,7 +20,11 @@
         "skipLibCheck": true,
         "strict": true,
         "strictNullChecks": false,
-        "target": "esnext"
+        "target": "esnext",
+        "typeRoots": [
+            "lib/customTypings",
+            "node_modules/@types"
+        ]
     },
     "exclude": [
         "./tests/*",
@@ -30,5 +34,6 @@
         "**/*.ts",
         "**/*.tsx",
         "./decs.d.ts"
-    ]
+    ],
+
 }

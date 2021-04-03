@@ -12,6 +12,9 @@ import global from "./global";
 let fileId1: number = null;
 let fileId2: number = null;
 
+let fileName1: string = null;
+let fileName2: string = null;
+
 describe("/api/file[POST]", () => {
   it("responds 200 as success private document", async () => {
     const client = await testClient(handler);
@@ -24,6 +27,7 @@ describe("/api/file[POST]", () => {
     expect(response.status).to.eqls(200);
 
     fileId1 = response.body.id;
+    fileName1 = response.body.path;
   });
 
   it("responds 200 as success public document", async () => {
@@ -36,6 +40,7 @@ describe("/api/file[POST]", () => {
 
     expect(response.status).to.eqls(200);
     fileId2 = response.body.id;
+    fileName2 = response.body.path;
   });
 
   it("responds 400 documentId needs", async () => {
@@ -171,6 +176,107 @@ describe("/api/file [GET]", () => {
     const response = await client.get(`/api/file`);
     expect(response.status).to.eqls(403);
   });
+});
+
+describe("/api/file[GET]", () => {
+  it("responds 200", async () => {
+    const client = await testClient(handler2, {
+      query: {
+        id: fileName1,
+      },
+    });
+
+    const response = await client.get(`/api/file/${fileName1}`);
+
+    expect(response.status).to.eqls(200);
+  });
+
+  it("responds 403", async () => {
+    const client = await testClientInvalidUser(handler2, {
+      query: {
+        id: fileName1,
+      },
+    });
+
+    const response = await client.get(`/api/file/${fileName1}`);
+
+    expect(response.status).to.eqls(403);
+  });
+
+  it("responds 200, access to public file", async () => {
+    const client = await testClient(handler2, {
+      query: {
+        id: fileName2,
+      },
+    });
+
+    const response = await client.get(`/api/file/${fileName2}`);
+
+    expect(response.status).to.eqls(200);
+  });
+
+  /*
+  it("responds 404", async () => {
+    const client = await testClient(handler2, {
+      query: {
+        id: 100000000,
+      },
+    });
+
+    const response = await client.get(`/api/file/100000000`);
+
+    expect(response.status).to.eqls(404);
+  });
+
+  it("responds 403", async () => {
+    const client = await testClientInvalidUser(handler2, {
+      query: {
+        id: fileId1,
+      },
+    });
+
+    const response = await client.get(`/api/file/${fileId1}`);
+
+    expect(response.status).to.eqls(403);
+  });
+
+  it("responds 200", async () => {
+    const client = await testClient(handler2, {
+      query: {
+        id: fileId1,
+      },
+    });
+
+    const response = await client.get(`/api/file/${fileId1}`);
+
+    expect(response.status).to.eqls(200);
+  });
+
+  it("responds 200", async () => {
+    const client = await testClient(handler2, {
+      query: {
+        id: fileId2,
+      },
+    });
+
+    const response = await client.get(`/api/file/${fileId2}`);
+
+    expect(response.status).to.eqls(200);
+  });
+
+  it("responds 404 after delete", async () => {
+    const client = await testClient(handler2, {
+      query: {
+        id: fileId1,
+      },
+    });
+
+    const response = await client.get(`/api/file/${fileId1}`);
+
+    expect(response.status).to.eqls(404);
+  });
+
+  */
 });
 
 describe("/api/document[DELETE]", () => {

@@ -1,5 +1,5 @@
 import { createContext, useContext, Dispatch } from "react";
-import type { document as Document } from "@prisma/client";
+import type { file as fileModel } from "@prisma/client";
 import { GlobalState, Action } from "../lib/reducer/reducer";
 import axios from "axios";
 import useSWR, { mutate } from "swr";
@@ -7,6 +7,7 @@ import { User } from "next-auth";
 import { ActionTypes } from "../lib/reducer/actionTypes";
 import Utils from "../lib/util";
 import * as notificationActions from "./notifications";
+import FileDownload from "js-file-download";
 
 export const actionFileUpload = async (
   state: GlobalState,
@@ -46,4 +47,18 @@ export const actionFileUpload = async (
       payload: 0,
     });
   }, 1000);
+};
+
+export const actionFileDownload = async (
+  state: GlobalState,
+  dispatch: Dispatch<Action>,
+  file: fileModel
+) => {
+  axios({
+    url: `/api/file/${file.path}`,
+    method: "GET",
+    responseType: "blob", // Important
+  }).then((response) => {
+    FileDownload(response.data, file.name);
+  });
 };

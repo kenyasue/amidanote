@@ -226,6 +226,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
         width: 500,
         height: 500,
         responseType: "buffer",
+        fit: "cover",
       });
 
       await writeFile(thumbFilePath, thumbnailBuffer);

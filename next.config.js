@@ -6,6 +6,10 @@ module.exports = {
   typescript: {
     // Pls fix this in the future
     ignoreBuildErrors: true,
+    "typeRoots": [
+        "lib/customTypings",
+        "node_modules/@types"
+    ]
   },
   build: {
       extend(config, {}) {

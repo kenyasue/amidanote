@@ -4,57 +4,25 @@ import {
   Table,
   Row,
   Col,
-  Input,
+  Popconfirm,
   Button,
   Select,
   Modal,
-  Switch,
-  Progress,
+  Menu,
+  Dropdown,
   message,
 } from "antd";
 const { Option } = Select;
 import { ColumnsType } from "antd/es/table";
-import { UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined, DownOutlined } from "@ant-design/icons";
 import axios from "axios";
 import dayjs from "dayjs";
 import filesize from "filesize";
+import fileDownload from "js-file-download";
 
 import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
 import useActions from "../../actions/useActions";
-
-const columns: ColumnsType<file> = [
-  {
-    title: "Name",
-    key: "name",
-    dataIndex: "name",
-    width: "40%",
-  },
-  {
-    title: "Type",
-    key: "mimeType",
-    dataIndex: "mimeType",
-    width: "30%",
-  },
-  {
-    title: "Size",
-    key: "size",
-    dataIndex: "size",
-    render: (text) => <span>{filesize(text)}</span>,
-    width: "10%",
-  },
-  {
-    title: "Created",
-    key: "createdAt",
-    dataIndex: "createdAt",
-    render: (text) => <span>{dayjs(text).format("YYYY/MM/DD HH:mm")}</span>,
-    width: "20%",
-    align: "right",
-  },
-];
-
-function onChange(pagination: any, filters: any, sorter: any, extra: any) {
-  console.log("params", pagination, filters, sorter, extra);
-}
+import ThumbImage from "../Thumb";
 
 const messageDialogKey = "uploadingMsg";
 
@@ -62,7 +30,7 @@ const component = () => {
   const state = useStateContext();
   const dispatch = useDispatchContext();
   const fileInputRef: any = useRef();
-  const { actionFileUpload } = useActions();
+  const { actionFileUpload, actionFileDownload } = useActions();
   const [showUpload, setShowUpload] = useState(false);
   const [files, setFiles] = useState(null);
 
@@ -114,6 +82,92 @@ const component = () => {
     actionFileUpload(file, state.selectedDocument.id);
   };
 
+  const clickOnContectMenu = async (key: string, fileId: string) => {
+    if (key == "code") {
+    }
+
+    if (key == "download") {
+      actionFileDownload(
+        files.find((file: file) => file.id === parseInt(fileId))
+      );
+    }
+
+    if (key == "delete") {
+      if (!confirm("Are you sure to delete this file ?")) return;
+
+      const fileResponse = await axios({
+        method: "delete",
+        url: `/api/file/${fileId}`,
+        headers: {
+          acceesstoken: state.accessToken,
+        },
+      });
+
+      loadFiles(state.selectedDocument.id);
+    }
+  };
+
+  const columns: ColumnsType<file> = [
+    {
+      title: "",
+      key: "thumbnailPath",
+      dataIndex: "thumbnailPath",
+      width: "10%",
+      render: (text, file) => <ThumbImage file={file} />,
+    },
+    {
+      title: "Name",
+      key: "name",
+      dataIndex: "name",
+      width: "35%",
+    },
+    {
+      title: "Type",
+      key: "mimeType",
+      dataIndex: "mimeType",
+      width: "20%",
+    },
+    {
+      title: "Size",
+      key: "size",
+      dataIndex: "size",
+      render: (text) => <span>{filesize(text)}</span>,
+      width: "10%",
+    },
+    {
+      title: "Created",
+      key: "createdAt",
+      dataIndex: "createdAt",
+      render: (text) => <span>{dayjs(text).format("YYYY/MM/DD HH:mm")}</span>,
+      width: "20%",
+      align: "right",
+    },
+    {
+      title: "",
+      key: "id",
+      dataIndex: "id",
+      render: (text) => (
+        <Dropdown
+          overlay={
+            <Menu
+              style={{ width: 150 }}
+              onClick={(e) => clickOnContectMenu(e.key, text)}
+            >
+              <Menu.Item key="code">Get the code</Menu.Item>
+              <Menu.Item key="download">Download</Menu.Item>
+              <Menu.Item key="delete">Delete</Menu.Item>
+            </Menu>
+          }
+        >
+          <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+            <DownOutlined />
+          </a>
+        </Dropdown>
+      ),
+      width: "5%",
+      align: "right",
+    },
+  ];
   return (
     <>
       <Row gutter={[16, 16]}>
@@ -146,12 +200,7 @@ const component = () => {
       </Row>
       <Row>
         <Col span={24}>
-          <Table
-            columns={columns}
-            dataSource={files}
-            onChange={onChange}
-            pagination={false}
-          />
+          <Table columns={columns} dataSource={files} pagination={false} />
         </Col>
       </Row>
     </>

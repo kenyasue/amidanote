@@ -1,4 +1,4 @@
-import type { document as Document } from "@prisma/client";
+import type { file as fileModel, document as Document } from "@prisma/client";
 
 import { User } from "next-auth";
 
@@ -24,7 +24,10 @@ import {
   actionSetCurrentProjectId as _actionSetCurrentProjectId,
 } from "./projects";
 
-import { actionFileUpload as _actionFileUpload } from "./file";
+import {
+  actionFileUpload as _actionFileUpload,
+  actionFileDownload as _actionFileDownload,
+} from "./file";
 
 import { actionChangeKeyword as _actionChangeKeyword } from "./search";
 
@@ -73,6 +76,9 @@ const component = () => {
 
     actionFileUpload: (file: File, documentId: number) => {
       _actionFileUpload(state, dispatch, file, documentId);
+    },
+    actionFileDownload: (file: fileModel) => {
+      _actionFileDownload(state, dispatch, file);
     },
   };
 };

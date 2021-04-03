@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, file } from "@prisma/client";
+import { PrismaClient, file, project } from "@prisma/client";
 const prisma = new PrismaClient();
 import { unlink } from "fs/promises";
-import { existsSync } from "fs";
+import fs, { existsSync } from "fs";
 
 import utils from "../../../lib/util";
 import checkAuth from "../../../lib/api/checkAuth";
@@ -28,7 +28,7 @@ export default async function documentHandler(
 
 /**
  * @swagger
- * /api/file/{id}:
+ * /api/file/{name}:
  *  get:
  *     summary: download a file
  *     providers:
@@ -39,8 +39,46 @@ export default async function documentHandler(
  *        content:
 
  */
-const handleGet = async (_req: NextApiRequest, res: NextApiResponse) => {
-  res.send("ok");
+const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    console.log("req.headers.acceesstoken", req.headers.acceesstoken);
+    const user = await checkAuth(req.headers.acceesstoken as string);
+    const id: string = req.query.id as string;
+    const fileName: string = id;
+
+    const file: file = await prisma.file.findFirst({
+      where: {
+        OR: [
+          {
+            path: fileName,
+          },
+          {
+            thumbnailPath: fileName,
+          },
+        ],
+      },
+    });
+
+    if (file === null) return res.status(404).send("File not found");
+
+    const project: project = await prisma.project.findFirst({
+      where: {
+        id: file.projectId,
+      },
+    });
+
+    if (project.isPrivate && (!user || user.id !== file.userId))
+      return res.status(403).send("Forbidden");
+
+    const filePath = `${process.env.UPLOADS_PATH}/${fileName}`;
+    res.setHeader("Content-disposition", "attachment; filename=" + file.name);
+    res.setHeader("Content-type", file.mimeType);
+    const filestream = fs.createReadStream(filePath);
+    filestream.pipe(res);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("server error");
+  }
 };
 
 /**

@@ -85,6 +85,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
           where: {
             userId: file.userId,
           },
+          orderBy: [{ createdAt: "desc" }],
         });
 
         const shasum1 = crypto.createHash("sha1");

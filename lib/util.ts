@@ -1,4 +1,6 @@
 import axios from "axios";
+import type { file as FileModel } from "@prisma/client";
+import crypto from "crypto";
 import { responseInterface } from "swr";
 import formidable, { File } from "formidable";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -91,5 +93,28 @@ export default class utils {
         else res({ fields, files });
       });
     });
+  };
+
+  static sha1 = (original: string): string => {
+    const shasum = crypto.createHash("sha1");
+    shasum.update(original);
+    const hash = shasum.digest("hex");
+    return hash;
+  };
+
+  static getThumbUrl = (file: FileModel, accessToken: string): string => {
+    return `/api/file/${file.thumbnailPath}?token=${utils.sha1(accessToken)}`;
+  };
+
+  static copyToClipboard = (str: string) => {
+    const el = document.createElement("textarea");
+    el.value = str;
+    el.setAttribute("readonly", "");
+    el.style.position = "absolute";
+    el.style.left = "-9999px";
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
   };
 }

@@ -19,10 +19,11 @@ import axios from "axios";
 import dayjs from "dayjs";
 import filesize from "filesize";
 import fileDownload from "js-file-download";
+import Image from "next/image";
 
 import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
 import useActions from "../../actions/useActions";
-import ThumbImage from "../Thumb";
+import utils from "../../lib/util";
 
 const messageDialogKey = "uploadingMsg";
 
@@ -82,13 +83,23 @@ const component = () => {
     actionFileUpload(file, state.selectedDocument.id);
   };
 
-  const clickOnContectMenu = async (key: string, fileId: string) => {
+  const clickOnContectMenu = async (key: string, file: file) => {
     if (key == "code") {
+      let code = "";
+
+      if (file.thumbnailPath) {
+        code = `[![${file.name}](/api/file/${file.thumbnailPath}?token=__TOKEN__)](/api/file/${file.path}?token=__TOKEN__)`;
+      } else {
+        code = `[${file.name}](/api/file/${file.path}?token=__TOKEN__)`;
+      }
+
+      utils.copyToClipboard(code);
+      message.info("code is copied to clipboard.");
     }
 
     if (key == "download") {
       actionFileDownload(
-        files.find((file: file) => file.id === parseInt(fileId))
+        files.find((fileOrig: file) => fileOrig.id === file.id)
       );
     }
 
@@ -97,7 +108,7 @@ const component = () => {
 
       const fileResponse = await axios({
         method: "delete",
-        url: `/api/file/${fileId}`,
+        url: `/api/file/${file.id}`,
         headers: {
           acceesstoken: state.accessToken,
         },
@@ -113,19 +124,31 @@ const component = () => {
       key: "thumbnailPath",
       dataIndex: "thumbnailPath",
       width: "10%",
-      render: (text, file) => <ThumbImage file={file} />,
+      render: (text, file) => (
+        <>
+          {file.thumbnailPath ? (
+            <img
+              className="thumb"
+              src={utils.getThumbUrl(file, state.accessToken)}
+            />
+          ) : null}
+        </>
+      ),
+      responsive: ["lg"],
     },
     {
       title: "Name",
       key: "name",
       dataIndex: "name",
       width: "35%",
+      responsive: ["xs"],
     },
     {
       title: "Type",
       key: "mimeType",
       dataIndex: "mimeType",
       width: "20%",
+      responsive: ["lg"],
     },
     {
       title: "Size",
@@ -133,6 +156,7 @@ const component = () => {
       dataIndex: "size",
       render: (text) => <span>{filesize(text)}</span>,
       width: "10%",
+      responsive: ["lg"],
     },
     {
       title: "Created",
@@ -141,17 +165,18 @@ const component = () => {
       render: (text) => <span>{dayjs(text).format("YYYY/MM/DD HH:mm")}</span>,
       width: "20%",
       align: "right",
+      responsive: ["lg"],
     },
     {
       title: "",
       key: "id",
       dataIndex: "id",
-      render: (text) => (
+      render: (text, file: file) => (
         <Dropdown
           overlay={
             <Menu
               style={{ width: 150 }}
-              onClick={(e) => clickOnContectMenu(e.key, text)}
+              onClick={(e) => clickOnContectMenu(e.key, file)}
             >
               <Menu.Item key="code">Get the code</Menu.Item>
               <Menu.Item key="download">Download</Menu.Item>

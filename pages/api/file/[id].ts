@@ -1,11 +1,18 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, file, project } from "@prisma/client";
+import {
+  PrismaClient,
+  file,
+  project,
+  Session as SessionModel,
+} from "@prisma/client";
 const prisma = new PrismaClient();
 import { unlink } from "fs/promises";
 import fs, { existsSync } from "fs";
+import crypto from "crypto";
 
 import utils from "../../../lib/util";
 import checkAuth from "../../../lib/api/checkAuth";
+import { Session } from "inspector";
 
 export default async function documentHandler(
   req: NextApiRequest,
@@ -67,8 +74,29 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    if (project.isPrivate && (!user || user.id !== file.userId))
-      return res.status(403).send("Forbidden");
+    if (project.isPrivate && (!user || user.id !== file.userId)) {
+      // check token
+      const token: string = req.query.token as string;
+      let tokenMatched = false;
+
+      if (token) {
+        // get session
+        const session: SessionModel = await prisma.session.findFirst({
+          where: {
+            userId: file.userId,
+          },
+        });
+
+        const shasum1 = crypto.createHash("sha1");
+
+        shasum1.update(session.accessToken);
+        const accessTokenInDB = shasum1.digest("hex");
+
+        tokenMatched = accessTokenInDB === token;
+      }
+
+      if (!tokenMatched) return res.status(403).send("Forbidden");
+    }
 
     const filePath = `${process.env.UPLOADS_PATH}/${fileName}`;
     res.setHeader("Content-disposition", "attachment; filename=" + file.name);

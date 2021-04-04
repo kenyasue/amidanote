@@ -8,6 +8,7 @@ import handler2 from "../pages/api/file/[id]";
 
 import { expect } from "chai";
 import global from "./global";
+var crypto = require("crypto");
 
 let fileId1: number = null;
 let fileId2: number = null;
@@ -183,6 +184,23 @@ describe("/api/file[GET]", () => {
     const client = await testClient(handler2, {
       query: {
         id: fileName1,
+      },
+    });
+
+    const response = await client.get(`/api/file/${fileName1}`);
+
+    expect(response.status).to.eqls(200);
+  });
+
+  it("responds 200 with accessToken", async () => {
+    const shasum = crypto.createHash("sha1");
+    shasum.update(global.accessToken1);
+    const accessToken = shasum.digest("hex");
+
+    const client = await testClientInvalidUser(handler2, {
+      query: {
+        id: fileName1,
+        token: accessToken,
       },
     });
 

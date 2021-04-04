@@ -5,6 +5,7 @@ import gfm from "remark-gfm";
 import remarkCodeFrontmatter from "remark-code-frontmatter";
 import highlight from "remark-syntax-highlight";
 import highlightJS from "highlight.js";
+import accessTokenPlugin from "../../lib/remarkPlugins/accessToken";
 
 const { Title } = Typography;
 import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
@@ -45,6 +46,7 @@ const component = ({ defaultDocument }: { defaultDocument: Document }) => {
                   },
                 },
               ],
+              [accessTokenPlugin, { accessToken: null }],
             ]}
             linkTarget="_blank"
             allowDangerousHtml={true}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import axios from "axios";
 import { Typography, Row, Col, Input, Button, Modal } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
@@ -25,7 +26,6 @@ const component = () => {
     if (state.activeTab === "edit") {
       if (editorInstance) editorInstance.focus();
 
-      console.log("state.selectedDocument", state.selectedDocument.title);
       setEditorContent(state.selectedDocument.markdown);
     }
 

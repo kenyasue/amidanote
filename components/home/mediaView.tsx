@@ -98,8 +98,8 @@ const component = () => {
     }
 
     if (key == "download") {
-      actionFileDownload(
-        files.find((fileOrig: file) => fileOrig.id === file.id)
+      window.open(
+        `/api/file/${file.path}?token=${utils.sha1(state.accessToken)}`
       );
     }
 

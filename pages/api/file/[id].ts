@@ -92,8 +92,9 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
         shasum1.update(session.accessToken);
         const accessTokenInDB = shasum1.digest("hex");
 
-        console.log("accessTokenInDB", accessTokenInDB);
-        console.log("token", token);
+        console.log("accessTokenInDB", session.accessToken);
+        console.log("accessTokenInDB hashed", accessTokenInDB);
+        console.log("token from url", token);
 
         tokenMatched = accessTokenInDB === token;
       }

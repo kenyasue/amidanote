@@ -85,15 +85,13 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
           where: {
             userId: file.userId,
           },
+          orderBy: [{ createdAt: "desc" }],
         });
 
         const shasum1 = crypto.createHash("sha1");
 
         shasum1.update(session.accessToken);
         const accessTokenInDB = shasum1.digest("hex");
-
-        console.log("accessTokenInDB", accessTokenInDB);
-        console.log("token", token);
 
         tokenMatched = accessTokenInDB === token;
       }

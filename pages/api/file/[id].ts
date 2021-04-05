@@ -81,23 +81,21 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
       if (token) {
         // get session
-        const session: SessionModel = await prisma.session.findFirst({
+        const sessions: Array<SessionModel> = await prisma.session.findMany({
           where: {
             userId: file.userId,
+            expires: { gt: new Date() },
           },
           orderBy: [{ createdAt: "desc" }],
         });
 
-        const shasum1 = crypto.createHash("sha1");
+        sessions.map((session) => {
+          const shasum1 = crypto.createHash("sha1");
+          shasum1.update(session.accessToken);
+          const accessTokenInDB = shasum1.digest("hex");
 
-        shasum1.update(session.accessToken);
-        const accessTokenInDB = shasum1.digest("hex");
-
-        console.log("accessTokenInDB", session.accessToken);
-        console.log("accessTokenInDB hashed", accessTokenInDB);
-        console.log("token from url", token);
-
-        tokenMatched = accessTokenInDB === token;
+          if (!tokenMatched) tokenMatched = accessTokenInDB === token;
+        });
       }
 
       if (!tokenMatched) return res.status(403).send("Forbidden");

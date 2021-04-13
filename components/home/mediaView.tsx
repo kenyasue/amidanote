@@ -20,12 +20,18 @@ import dayjs from "dayjs";
 import filesize from "filesize";
 import fileDownload from "js-file-download";
 import Image from "next/image";
+import { FileIcon, defaultStyles } from "react-file-icon";
 
 import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
 import useActions from "../../actions/useActions";
 import utils from "../../lib/util";
 
 const messageDialogKey = "uploadingMsg";
+
+enum FilterType {
+  Document,
+  Project,
+}
 
 const component = () => {
   const state = useStateContext();
@@ -34,11 +40,12 @@ const component = () => {
   const { actionFileUpload, actionFileDownload } = useActions();
   const [showUpload, setShowUpload] = useState(false);
   const [files, setFiles] = useState(null);
+  const [filterType, setFilterType] = useState(FilterType.Document);
 
   useEffect(() => {
     if (!state.selectedDocument) return;
 
-    loadFiles(state.selectedDocument.id);
+    loadFiles();
   }, [state.selectedDocument]);
 
   useEffect(() => {
@@ -60,22 +67,43 @@ const component = () => {
       });
 
       setShowUpload(false);
-      loadFiles(state.selectedDocument.id);
+      loadFiles();
     }
   }, [state.uploadProgress]);
 
-  const loadFiles = async (documentId: number) => {
-    // get files
-    const fileResponse = await axios({
-      method: "get",
-      url: `/api/file?document=${documentId}`,
-      headers: {
-        acceesstoken: state.accessToken,
-      },
-    });
+  useEffect(() => {
+    loadFiles();
+  }, [filterType]);
 
-    if (fileResponse.data) {
-      setFiles(fileResponse.data);
+  const loadFiles = async () => {
+    // get files
+
+    if (filterType == FilterType.Document) {
+      const fileResponse = await axios({
+        method: "get",
+        url: `/api/file?document=${state.selectedDocument.id}`,
+        headers: {
+          acceesstoken: state.accessToken,
+        },
+      });
+
+      if (fileResponse.data) {
+        setFiles(fileResponse.data);
+      }
+    }
+
+    if (filterType == FilterType.Project) {
+      const fileResponse = await axios({
+        method: "get",
+        url: `/api/file?project=${state.currentProjectId}`,
+        headers: {
+          acceesstoken: state.accessToken,
+        },
+      });
+
+      if (fileResponse.data) {
+        setFiles(fileResponse.data);
+      }
     }
   };
 
@@ -114,7 +142,7 @@ const component = () => {
         },
       });
 
-      loadFiles(state.selectedDocument.id);
+      loadFiles();
     }
   };
 
@@ -131,7 +159,14 @@ const component = () => {
               className="thumb"
               src={utils.getThumbUrl(file, state.accessToken)}
             />
-          ) : null}
+          ) : (
+            <div style={{ width: "50px", textAlign: "center" }}>
+              <FileIcon
+                extension={file.name.split(".").pop()}
+                {...defaultStyles.docx}
+              />
+            </div>
+          )}
         </>
       ),
       responsive: ["lg"],
@@ -198,11 +233,19 @@ const component = () => {
       <Row gutter={[16, 16]}>
         <Col span={24} style={{ textAlign: "right" }}>
           <Select
-            defaultValue={1}
+            defaultValue={FilterType.Document}
             style={{ textAlign: "left", width: "320px" }}
+            onChange={(value) => {
+              setFilterType(value);
+            }}
+            value={filterType}
           >
-            <Option value={1}>Show files belongs to the document</Option>
-            <Option value={1}>Show files belongs to the project</Option>
+            <Option value={FilterType.Document}>
+              Show files belongs to the document
+            </Option>
+            <Option value={FilterType.Project}>
+              Show files belongs to the project
+            </Option>
           </Select>
 
           <Button

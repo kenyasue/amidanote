@@ -56,6 +56,25 @@
       }
     }
 
+    .media-table {
+      @include pc {
+        height: calc(100vh - (#{$headerHeight} + 2px) * 2 - 59px - 48px);
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      @include tab {
+        height: calc(100vh - (#{$headerHeight} + 2px) * 2 - 59px - 48px);
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      @include sp {
+        height: auto;
+        overflow-x: hidden;
+      }
+    }
+
     .preview-top {
       @include pc {
         height: calc(100vh - (#{$headerHeight} + 2px) * 2 - 59px);

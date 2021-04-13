@@ -266,7 +266,7 @@ const component = () => {
           />
         </Col>
       </Row>
-      <Row>
+      <Row className="media-table">
         <Col span={24}>
           <Table columns={columns} dataSource={files} pagination={false} />
         </Col>

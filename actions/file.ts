@@ -26,7 +26,6 @@ export const actionFileUpload = async (
       "Content-Type": "multipart/form-data",
     },
     onUploadProgress: (progressEvent) => {
-      console.log(progressEvent.loaded, file.size);
       dispatch({
         type: ActionTypes.setUploadProgress,
         payload: Math.ceil((progressEvent.loaded / file.size) * 100),

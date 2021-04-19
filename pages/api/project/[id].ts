@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, file } from "@prisma/client";
 const prisma = new PrismaClient();
+import fs, { existsSync } from "fs";
+import { unlink } from "fs/promises";
 
 import utils from "../../../lib/util";
 import checkAuth from "../../../lib/api/checkAuth";
@@ -170,12 +172,46 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
   if (project === null) return res.status(404).send("Project not found");
   if (project.userId !== user.id) return res.status(403).send("forbidden");
 
-  // delete all files
-  await prisma.file.deleteMany({
+  // delete files
+  const files: Array<file> = await prisma.file.findMany({
     where: { projectId: projectId },
   });
 
-  // delete all documents first
+  console.log(
+    "document",
+    files.map((f) => f.title)
+  );
+
+  console.log(
+    "files",
+    files.map((f) => f.name)
+  );
+
+  if (files) {
+    await Promise.all(
+      files.map(async (file) => {
+        await prisma.file.delete({
+          where: { id: file.id },
+        });
+
+        // delete file entity
+        const filePath = `${process.env.UPLOADS_PATH}/${file.path}`;
+        const thumbPath = `${process.env.UPLOADS_PATH}/${file.thumbnailPath}`;
+
+        if (existsSync(filePath)) await unlink(filePath);
+        if (
+          file.thumbnailPath &&
+          file.thumbnailPath !== "" &&
+          existsSync(thumbPath)
+        )
+          await unlink(thumbPath);
+
+        console.log("deleted", filePath, thumbPath);
+      })
+    );
+  }
+
+  // delete all documents
   await prisma.document.deleteMany({
     where: { projectId: projectId },
   });

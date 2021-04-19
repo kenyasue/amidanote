@@ -33,7 +33,6 @@ const reduce = (state: any, action: any) => {
         (prj: project) => prj.id == state.currentProjectId
       );
 
-      console.log("loadProjects", projectTmp);
       return {
         ...state,
         projects: action.payload,

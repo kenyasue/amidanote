@@ -12,6 +12,11 @@ export const appStateContext = createContext<GlobalState>({
   userSignedIn: null,
   accessToken: "",
   documentSearchKeyword: "",
+  projects: null,
+  currentProjectId: 0,
+  selectedProject: null,
+  notificationMessageInfo: "",
+  uploadProgress: 0,
 });
 
 export const dispatcherContext = createContext<Dispatch<Action>>(() => null);

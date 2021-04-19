@@ -49,26 +49,26 @@ const component = () => {
   }, [state.selectedDocument]);
 
   useEffect(() => {
-    if (!showUpload && state.uploadProgress > 0 && state.uploadProgress < 100) {
-      message.loading({
-        content: "Uploading...",
-        key: messageDialogKey,
-        duration: 0,
-      });
+    if (state.uploadProgress >= 100) {
+      (async () => {
+        await utils.wait(1);
 
-      setShowUpload(true);
+        message.success({
+          content: "Done",
+          key: messageDialogKey,
+          duration: 2,
+        });
+
+        await utils.wait(1);
+
+        setShowUpload(false);
+        loadFiles();
+      })();
     }
 
-    if (showUpload && state.uploadProgress >= 100) {
-      message.success({
-        content: "Done",
-        key: messageDialogKey,
-        duration: 2,
-      });
-
-      setShowUpload(false);
-      loadFiles();
-    }
+    console.log(
+      `showUpload ${showUpload} state.uploadProgress ${state.uploadProgress}`
+    );
   }, [state.uploadProgress]);
 
   useEffect(() => {
@@ -108,6 +108,13 @@ const component = () => {
   };
 
   const setSelectedFile = (file: File) => {
+    setShowUpload(true);
+    message.loading({
+      content: "Uploading...",
+      key: messageDialogKey,
+      duration: 0,
+    });
+
     actionFileUpload(file, state.selectedDocument.id);
   };
 

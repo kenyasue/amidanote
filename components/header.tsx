@@ -20,6 +20,7 @@ import {
 import { Session } from "inspector";
 import { useStateContext, useDispatchContext } from "../lib/reducer/context";
 import useActions from "../actions/useActions";
+import Image from "next/image";
 
 export default function Header({ providers = {} }: { providers: any }) {
   const [showLogin, setShowLogin] = useState(false);
@@ -77,7 +78,10 @@ export default function Header({ providers = {} }: { providers: any }) {
   return (
     <div className="header-content">
       <h1 className="title">
-        <a href="/">Amidanote</a>
+        <a href="/">
+          <img src="/images/logo2.svg" alt="me" width="48" height="48" />
+          Amidanote
+        </a>
       </h1>
       <div className="actions">
         {router.pathname === "/" || /^\/u\/.+$/.test(router.pathname) ? (

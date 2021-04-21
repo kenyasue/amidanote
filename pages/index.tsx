@@ -13,6 +13,10 @@ import {
 } from "antd";
 const { Option } = Select;
 
+import { Typography, Divider } from "antd";
+
+const { Title, Paragraph, Text, Link } = Typography;
+
 const { Search } = Input;
 import { FileAddOutlined } from "@ant-design/icons";
 
@@ -38,9 +42,10 @@ export default function Home({ providers }: { providers: any }) {
           <Header providers={providers} />
         </Col>
       </Row>
-      <Row className="home">
-        <Col span={6} className="sider"></Col>
-        <Col span={18} className="padding-1 main"></Col>
+      <Row className="index">
+        <Col span={24} className="main">
+          <div className=""></div>
+        </Col>
       </Row>
       <Row className="footer">
         <Col span={24} className="padding-1">

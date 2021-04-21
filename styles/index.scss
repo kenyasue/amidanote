@@ -1,0 +1,7 @@
+.index {
+  .main {
+    height: calc(100vh - (#{$headerHeight} + 2px) * 1 - 55px);
+    overflow-y: auto;
+    padding: 20px 20px 20px 20px;
+  }
+}

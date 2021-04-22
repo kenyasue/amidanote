@@ -78,7 +78,7 @@ export default function Header({ providers = {} }: { providers: any }) {
   return (
     <div className="header-content">
       <h1 className="title">
-        <a href="/">
+        <a href="https://amidanote.com">
           <img src="/images/logo2.svg" alt="me" width="48" height="48" />
           Amidanote
         </a>

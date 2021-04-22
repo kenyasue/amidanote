@@ -69,6 +69,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 </script>`,
               }}
             />
+
+            <title>Amidanote - simplest note app</title>
           </Head>
           <Component {...pageProps} />
         </dispatcherContext.Provider>

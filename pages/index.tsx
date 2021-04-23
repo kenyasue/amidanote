@@ -20,7 +20,7 @@ const { Title, Paragraph, Text, Link } = Typography;
 const { Search } = Input;
 import { FileAddOutlined } from "@ant-design/icons";
 
-import { useSession, providers, SessionProvider } from "next-auth/client";
+import { useSession, getProviders, SessionProvider } from "next-auth/client";
 import { useStateContext, useDispatchContext } from "../lib/reducer/context";
 import Header from "../components/header";
 import Footer from "../components/footer";
@@ -58,6 +58,6 @@ export default function Home({ providers }: { providers: any }) {
 
 Home.getInitialProps = async (context: SessionProvider) => {
   return {
-    providers: await providers(),
+    providers: await getProviders(),
   };
 };

@@ -20,7 +20,7 @@ import {
   DiffOutlined,
 } from "@ant-design/icons";
 
-import { useSession, providers, SessionProvider } from "next-auth/client";
+import { useSession, getProviders, SessionProvider } from "next-auth/client";
 
 import { useStateContext, useDispatchContext } from "../lib/reducer/context";
 import TreeView from "../components/home/documentTree";
@@ -61,6 +61,6 @@ export default function Home({ providers }: { providers: any }) {
 
 Home.getInitialProps = async (context: SessionProvider) => {
   return {
-    providers: await providers(),
+    providers: await getProviders(),
   };
 };

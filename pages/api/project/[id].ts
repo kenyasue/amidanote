@@ -177,16 +177,6 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
     where: { projectId: projectId },
   });
 
-  console.log(
-    "document",
-    files.map((f) => f.title)
-  );
-
-  console.log(
-    "files",
-    files.map((f) => f.name)
-  );
-
   if (files) {
     await Promise.all(
       files.map(async (file) => {

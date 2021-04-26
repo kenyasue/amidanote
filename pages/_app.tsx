@@ -52,22 +52,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             <meta name="msapplication-TileColor" content="#da532c" />
             <meta name="theme-color" content="#ffffff"></meta>
 
-            <script
-              async
-              src="https://www.googletagmanager.com/gtag/js?id=G-9SXMDCBS13"
-            ></script>
-
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-9SXMDCBS13');`,
-              }}
-            />
-
             <title>Amidanote - simplest note app</title>
           </Head>
           <Component {...pageProps} />

@@ -32,7 +32,6 @@ export default function Header({ providers = {} }: { providers: any }) {
 
   useEffect(() => {
     if (/^\/u\/.+$/.test(router.pathname)) {
-      console.log("aaaa");
       return;
     }
 

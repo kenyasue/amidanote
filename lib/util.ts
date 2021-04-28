@@ -1,5 +1,14 @@
 import axios from "axios";
+import type { file as FileModel } from "@prisma/client";
+import crypto from "crypto";
 import { responseInterface } from "swr";
+import formidable, { File } from "formidable";
+import type { NextApiRequest, NextApiResponse } from "next";
+
+export interface FormData {
+  fields: any;
+  files: any;
+}
 
 export default class utils {
   static isEmpty = (val: string): boolean => {
@@ -36,7 +45,6 @@ export default class utils {
 
   static waitToUpdate = (obj: any, paramName: string) => {
     const initialObj = obj[paramName];
-    console.log(obj, paramName, obj[paramName]);
 
     return new Promise((res) => {
       const timer = setInterval(() => {
@@ -47,5 +55,66 @@ export default class utils {
         }
       }, 1000);
     });
+  };
+
+  static isMobile = (): boolean => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+
+    return false;
+  };
+
+  static isBrowser = (): boolean => {
+    return typeof window !== "undefined";
+  };
+
+  static truncateString = (str: string, limit: number = 16): string => {
+    let suffix = "";
+    if (str.length > limit) suffix = "...";
+
+    return str.substr(0, limit) + suffix;
+  };
+
+  static parseForm = (request: NextApiRequest): Promise<FormData> => {
+    return new Promise((res, rej) => {
+      const form: formidable = new formidable.IncomingForm({
+        maxFieldsSize: parseInt(process.env.MAX_FILESIZE) * 1024 * 1024,
+      });
+
+      form.on("error", function (err: any) {
+        console.error(err);
+      });
+
+      form.on("end", function () {});
+
+      form.parse(request, (err, fields, files) => {
+        if (err) rej(err);
+        else res({ fields, files });
+      });
+    });
+  };
+
+  static sha1 = (original: string): string => {
+    const shasum = crypto.createHash("sha1");
+    shasum.update(original);
+    const hash = shasum.digest("hex");
+    return hash;
+  };
+
+  static getThumbUrl = (file: FileModel, accessToken: string): string => {
+    return `/api/file/${file.thumbnailPath}?token=${utils.sha1(accessToken)}`;
+  };
+
+  static copyToClipboard = (str: string) => {
+    const el = document.createElement("textarea");
+    el.value = str;
+    el.setAttribute("readonly", "");
+    el.style.position = "absolute";
+    el.style.left = "-9999px";
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
   };
 }

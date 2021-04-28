@@ -1,4 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import global from "./global";
 
@@ -37,12 +37,51 @@ before(async () => {
     },
   });
 
+  // create project1
+  const project1 = await prisma.project.create({
+    data: {
+      name: "project1",
+      isPrivate: true,
+      user: {
+        connect: { id: user1.id },
+      },
+    },
+  });
+
+  const project2 = await prisma.project.create({
+    data: {
+      name: "project2",
+      isPrivate: true,
+      user: {
+        connect: { id: user2.id },
+      },
+    },
+  });
+
+  const project3 = await prisma.project.create({
+    data: {
+      name: "project3",
+      isPrivate: false,
+      user: {
+        connect: { id: user1.id },
+      },
+    },
+  });
+
+  global.projectId1 = project1.id;
+  global.projectId2 = project2.id;
+  global.projectId3 = project3.id;
+  global.projectName3 = project3.name;
+
   for (let i = 0; i < 10; i++) {
     const doc = await prisma.document.create({
       data: {
         markdown: "test",
         user: {
           connect: { id: user1.id },
+        },
+        project: {
+          connect: { id: project1.id },
         },
       },
     });
@@ -57,17 +96,53 @@ before(async () => {
         user: {
           connect: { id: user2.id },
         },
+        project: {
+          connect: { id: project2.id },
+        },
       },
     });
 
     if (i == 0) global.documentIdNoAccess = doc.id;
+  }
+
+  const doc = await prisma.document.create({
+    data: {
+      markdown: "test",
+      user: {
+        connect: { id: user1.id },
+      },
+      project: {
+        connect: { id: project1.id },
+      },
+    },
+  });
+
+  global.documentIdForFile = doc.id;
+
+  // public project has 5 documents
+  for (let i = 0; i < 5; i++) {
+    const doc = await prisma.document.create({
+      data: {
+        markdown: "test",
+        user: {
+          connect: { id: user1.id },
+        },
+        project: {
+          connect: { id: project3.id },
+        },
+      },
+    });
+
+    global.documentIdPublic = doc.id;
   }
 });
 
 after(async () => {
   // remove all documents and finish
 
+  await prisma.file.deleteMany();
   await prisma.document.deleteMany();
+  await prisma.project.deleteMany();
   await prisma.session.deleteMany();
   await prisma.user.deleteMany();
 

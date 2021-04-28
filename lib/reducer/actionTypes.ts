@@ -6,4 +6,8 @@ export enum ActionTypes {
   renderMenu = "renderMenu",
   signIn = "signIn",
   typeKeyword = "typeKeyword",
+  loadProjects = "loadProjects",
+  setCurrentProjectId = "setCurrentProjectId",
+  showInfo = "showInfo",
+  setUploadProgress = "setUploadProgress",
 }

@@ -1,27 +1,39 @@
-import { useReducer } from "react";
-import { Layout, Row, Col, Input, Button, Space } from "antd";
+import { useEffect, useState } from "react";
+
 import {
-  signIn,
-  signOut,
-  useSession,
-  providers,
-  SessionProvider,
-} from "next-auth/client";
+  Tooltip,
+  Row,
+  Col,
+  Input,
+  Button,
+  Select,
+  Modal,
+  Switch,
+  Form,
+} from "antd";
+const { Option } = Select;
 
-import Home from "./home";
+import { Typography, Divider } from "antd";
 
-import { appStateContext, dispatcherContext } from "../lib/reducer/context";
+const { Title, Paragraph, Text, Link } = Typography;
 
+const { Search } = Input;
+import { FileAddOutlined } from "@ant-design/icons";
+
+import { useSession, getProviders, SessionProvider } from "next-auth/client";
+import { useStateContext, useDispatchContext } from "../lib/reducer/context";
 import Header from "../components/header";
 import Footer from "../components/footer";
 
-import reducer from "../lib/reducer/reducer";
+export default function Home({ providers }: { providers: any }) {
+  const [documentUpdated, setDocumentUpdated] = useState(false);
+  const state = useStateContext();
 
-export default function Index({ providers }: { providers: any }) {
-  const [state, dispatch] = useReducer(reducer, {
-    selectedDocument: {},
-    triggerSave: false,
-  });
+  useEffect(() => {
+    if (documentUpdated) {
+      setDocumentUpdated(false);
+    }
+  }, [state.documents]);
 
   return (
     <>
@@ -30,9 +42,9 @@ export default function Index({ providers }: { providers: any }) {
           <Header providers={providers} />
         </Col>
       </Row>
-      <Row className="top">
-        <Col span={24} className="padding-1">
-          Welcome to undefined.md
+      <Row className="index">
+        <Col span={24} className="main">
+          <div className=""></div>
         </Col>
       </Row>
       <Row className="footer">
@@ -44,8 +56,8 @@ export default function Index({ providers }: { providers: any }) {
   );
 }
 
-Index.getInitialProps = async (context: SessionProvider) => {
+Home.getInitialProps = async (context: SessionProvider) => {
   return {
-    providers: await providers(),
+    providers: await getProviders(),
   };
 };

@@ -9,7 +9,7 @@
             "type": "node",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "runtimeExecutable": "npm",
+            "runtimeExecutable": "/home/ken/.nvm/versions/node/v14.13.1/bin/npm",
             "runtimeArgs": [
                 "run",
                 "dev"

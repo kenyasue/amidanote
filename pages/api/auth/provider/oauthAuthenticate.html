@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>OAuth Authenticate</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class='container'>
+  <h1>Standalone mode authentication</h1>
+  <form action='/api/auth/provider/authorize' method="post" id="form">
+    <p>Redirecting to amidanote with authorized token...</p>
+
+    <input type="hidden" class='form-control' name='client_id' />
+    <input type="hidden" class='form-control' name='redirect_uri'/>
+    <input type="hidden" class='form-control' name='response_type'/>
+    <input type="hidden" class='form-control' name='grant_type'/>
+    <input type="hidden" class='form-control' name='state'/>
+    <input type="hidden" class='form-control auth' type="text" name="username" value="username">
+    <input  type="hidden" class='form-control auth' type="text" name="password" value="password" />
+  </form>
+  <script>
+  ;(function(){
+    const urlParams = new URLSearchParams(window.location.search)
+    ;['client_id','redirect_uri', 'response_type', 'grant_type', 'state'].forEach(type => {
+      const input = document.body.querySelector(`input[name=${type}]`)
+      const value = urlParams.get(type)
+      input.value = value
+    })
+    const error = urlParams.get('success') === 'false'
+    if(error) {
+      document.body.querySelectorAll('.auth').forEach(el => el.classList.add('is-invalid'))
+    }
+
+    setTimeout( () => {
+      document.querySelector("#form").submit();
+    },500)
+  }())
+  </script>
+</body>
+</html>

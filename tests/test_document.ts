@@ -10,18 +10,12 @@ import { expect } from "chai";
 import global from "./global";
 
 describe("/api/document [GET]", () => {
-  it("responds 200 as success", async () => {
+  it("Get all documents of the user", async () => {
     const client = await testClient(handler, {});
     const response = await client.get(`/api/document`);
     expect(response.status).to.eqls(200);
     expect(response.body).to.be.an("array");
-    expect(response.body.length).to.eqls(10);
-  });
-
-  it("responds 403 as forbidden", async () => {
-    const client = await testClientNoAccessToken(handler, {});
-    const response = await client.get(`/api/document`);
-    expect(response.status).to.eqls(403);
+    expect(response.body.length).to.eqls(16);
   });
 
   it("responds 200 and 5 elements as success", async () => {
@@ -30,6 +24,78 @@ describe("/api/document [GET]", () => {
     expect(response.status).to.eqls(200);
     expect(response.body).to.be.an("array");
     expect(response.body.length).to.eqls(5);
+  });
+
+  it("specify project id ", async () => {
+    const client = await testClient(handler, {
+      query: {
+        project: global.projectId1,
+      },
+    });
+    const response = await client.get(`/api/document`);
+    expect(response.status).to.eqls(200);
+    expect(response.body).to.be.an("array");
+    expect(response.body.length).to.eqls(11);
+  });
+
+  it("Try to access private documents", async () => {
+    const client = await testClient(handler, {
+      query: {
+        project: global.projectId2,
+      },
+    });
+    const response = await client.get(`/api/document`);
+    expect(response.status).to.eqls(403);
+  });
+
+  it("Invalid project id", async () => {
+    const client = await testClient(handler, {
+      query: {
+        project: 1231231,
+      },
+    });
+    const response = await client.get(`/api/document`);
+    expect(response.status).to.eqls(404);
+  });
+
+  it("Try to access public project", async () => {
+    const client = await testClientInvalidUser(handler, {
+      query: {
+        project: global.projectId3,
+      },
+    });
+    const response = await client.get(`/api/document`);
+    expect(response.status).to.eqls(200);
+    expect(response.body).to.be.an("array");
+    expect(response.body.length).to.eqls(5);
+  });
+
+  it("No access token publich project", async () => {
+    const client = await testClientNoAccessToken(handler, {
+      query: {
+        project: global.projectId3,
+      },
+    });
+    const response = await client.get(`/api/document`);
+    expect(response.status).to.eqls(200);
+    expect(response.body).to.be.an("array");
+    expect(response.body.length).to.eqls(5);
+  });
+
+  it("No access token privaate project", async () => {
+    const client = await testClientNoAccessToken(handler, {
+      query: {
+        project: global.projectId1,
+      },
+    });
+    const response = await client.get(`/api/document`);
+    expect(response.status).to.eqls(403);
+  });
+
+  it("No access token no project", async () => {
+    const client = await testClientNoAccessToken(handler, {});
+    const response = await client.get(`/api/document`);
+    expect(response.status).to.eqls(403);
   });
 });
 
@@ -83,7 +149,7 @@ describe("/api/document[POST]", () => {
 
     const response = await client
       .post("/api/document")
-      .send({ markdown: "test", title: "test" });
+      .send({ markdown: "test", title: "test", projectId: global.projectId1 });
 
     expect(response.status).to.eqls(200);
   });

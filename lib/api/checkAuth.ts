@@ -2,6 +2,8 @@ import { PrismaClient, User } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default async (accessToken: string): Promise<User> => {
+  if (!accessToken) return null;
+
   const session = await prisma.session.findFirst({
     where: {
       accessToken: accessToken,

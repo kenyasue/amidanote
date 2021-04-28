@@ -3,3 +3,19 @@
 .top {
   height: calc(100vh - (#{$headerHeight} + 2px) * 2);
 }
+
+.title {
+  font-weight: 900;
+  font-size: 2em;
+
+  a {
+    line-height: 48px;
+    vertical-align: middle;
+    color: #ffffffd9;
+
+    img {
+      margin-bottom: 8px;
+      margin-right: 8px;
+    }
+  }
+}

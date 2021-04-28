@@ -1,4 +1,4 @@
-import type { document as Document } from "@prisma/client";
+import type { document as Document, project } from "@prisma/client";
 import { User } from "next-auth";
 
 import { ActionTypes } from "./actionTypes";
@@ -12,6 +12,11 @@ export interface GlobalState {
   userSignedIn: User;
   accessToken: string;
   documentSearchKeyword: string;
+  projects: Array<project>;
+  currentProjectId: number;
+  selectedProject: project;
+  notificationMessageInfo: string;
+  uploadProgress: number;
 }
 
 export interface Action {
@@ -23,8 +28,18 @@ const reduce = (state: any, action: any) => {
   switch (action.type) {
     case ActionTypes.loadDocuments:
       return { ...state, documents: action.payload };
+    case ActionTypes.loadProjects:
+      const projectTmp = action.payload.find(
+        (prj: project) => prj.id == state.currentProjectId
+      );
+
+      return {
+        ...state,
+        projects: action.payload,
+        selectedProject: projectTmp,
+      };
     case ActionTypes.setCurrentDocument:
-      return { ...state, selectedDocument: action.payload };
+      return { ...state, selectedDocument: { ...action.payload } };
     case ActionTypes.triggerSave:
       return { ...state, triggerSave: !state.triggerSave };
     case ActionTypes.setActiveTab:
@@ -40,6 +55,29 @@ const reduce = (state: any, action: any) => {
 
     case ActionTypes.typeKeyword:
       return { ...state, documentSearchKeyword: action.payload };
+
+    case ActionTypes.setCurrentProjectId:
+      const project =
+        state.projects &&
+        state.projects.find((prj: project) => prj.id == action.payload);
+
+      return {
+        ...state,
+        currentProjectId: action.payload,
+        selectedProject: project,
+      };
+
+    case ActionTypes.showInfo:
+      return {
+        ...state,
+        notificationMessageInfo: action.payload,
+      };
+
+    case ActionTypes.setUploadProgress:
+      return {
+        ...state,
+        uploadProgress: action.payload,
+      };
 
     default:
       return state;

@@ -2,6 +2,10 @@
 
 Amidanote is nextjs based note app which you can take a note in markdown format as also organize and publish.
 
+## Try SaaS version now
+
+Open https://amidanote.com/ then go to the app
+
 ## Start a development server
 
 1. Clone the source code from github

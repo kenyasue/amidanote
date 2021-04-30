@@ -260,7 +260,7 @@ const component = () => {
         />
       </Tooltip>
 
-      <Tooltip title="Edit Project">
+      <Tooltip title="New Project">
         <Button
           type="primary"
           icon={<DiffOutlined />}

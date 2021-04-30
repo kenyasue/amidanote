@@ -120,6 +120,14 @@ export default function Header({ providers = {} }: { providers: any }) {
                     <Menu>
                       <Menu.Item>
                         <a
+                          href="https://app.amidanote.com/u/1/18"
+                          target="_blank"
+                        >
+                          Help
+                        </a>
+                      </Menu.Item>
+                      <Menu.Item>
+                        <a
                           onClick={() => {
                             signOut({
                               callbackUrl: "/",

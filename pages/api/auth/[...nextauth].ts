@@ -73,6 +73,18 @@ if (process.env.STANDALONEMODE) {
         "https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code",
     })
   );
+  options.providers.push(
+    Providers.Facebook({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    })
+  );
+  options.providers.push(
+    Providers.GitHub({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    })
+  );
 }
 export default (req: NextApiRequest, res: NextApiResponse) =>
   NextAuth(req, res, options);

@@ -15,6 +15,7 @@ import {
   GoogleOutlined,
   AppleOutlined,
   FacebookOutlined,
+  GithubOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { Session } from "inspector";
@@ -175,13 +176,18 @@ export default function Header({ providers = {} }: { providers: any }) {
       >
         {providers
           ? Object.values(providers).map((providerTmp: any) => {
+              let icon = <GoogleOutlined />;
               const provider: SessionProvider = providerTmp;
+              if (/google/i.test(provider.name)) icon = <GoogleOutlined />;
+              if (/facebook/i.test(provider.name)) icon = <FacebookOutlined />;
+              if (/github/i.test(provider.name)) icon = <GithubOutlined />;
+              if (/StandaloneMode/i.test(provider.name)) icon = null;
 
               return (
                 <Button
                   type="default"
                   block
-                  icon={<GoogleOutlined />}
+                  icon={icon}
                   className="login-button"
                   key={provider.name}
                   onClick={() => signIn(provider.id)}

@@ -33,6 +33,7 @@ const options = {
     error: "/", // Error code passed in query string as ?error=
   },
   adapter: Adapters.Prisma.Adapter({ prisma }),
+  debug: true,
 };
 
 if (process.env.STANDALONEMODE) {

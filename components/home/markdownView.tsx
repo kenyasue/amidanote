@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import axios from "axios";
 import { Typography, Row, Col, Input, Button, Modal } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { ConsoleSqlOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Controlled as CodeMirror } from "react-codemirror2";
 
 import useActions from "../../actions/useActions";
@@ -23,21 +23,12 @@ const component = () => {
   } = useActions();
 
   useEffect(() => {
-    if (state.activeTab === "edit") {
-      if (editorInstance) editorInstance.focus();
-
-      setEditorContent(state.selectedDocument.markdown);
-    }
-
     (async () => {
-      state.selectedDocument.markdown = state.selectedDocument.markdown + " ";
-      actionUpdateCurrentDocument(state.selectedDocument, true);
-
+      // hack to force refresh codemirror component.
+      setEditorContent(state.selectedDocument.markdown + " ");
       await utils.wait(0.01);
-
       const md = state.selectedDocument.markdown;
-      state.selectedDocument.markdown = md.substr(0, md.length - 1);
-      actionUpdateCurrentDocument(state.selectedDocument, true);
+      setEditorContent(md.substr(0, md.length - 1));
     })();
   }, [state.activeTab]);
 

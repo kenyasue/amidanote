@@ -69,6 +69,19 @@ export const actionCreateNewDocument = async (
   dispatch: Dispatch<Action>,
   projectId: number
 ) => {
+  // keep same folder with current selected document
+  const currentDocument: Document = state.selectedDocument;
+
+  let newTitle: string = "New Docuemnt";
+
+  if (currentDocument) {
+    const titleCunks = currentDocument.title.split("/");
+    if (titleCunks.length > 1) {
+      newTitle =
+        titleCunks.slice(0, titleCunks.length - 1).join("/") + "/New Document";
+    }
+  }
+
   // event listers
   const documentResponse = await axios({
     method: "post",
@@ -78,7 +91,7 @@ export const actionCreateNewDocument = async (
     },
     data: {
       projectId: projectId,
-      title: `New Document`,
+      title: newTitle,
       markdown: "",
     },
   });

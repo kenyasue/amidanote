@@ -37,7 +37,6 @@ const component = () => {
   }, [editorInstance]);
 
   useEffect(() => {
-    console.log("aa");
     setEditorContent(state.selectedDocument.markdown);
   }, [state.selectedDocument]);
 

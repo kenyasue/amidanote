@@ -17,6 +17,7 @@ import {
   FacebookOutlined,
   GithubOutlined,
   UserOutlined,
+  TwitterOutlined,
 } from "@ant-design/icons";
 import { Session } from "inspector";
 import { useStateContext, useDispatchContext } from "../lib/reducer/context";
@@ -181,6 +182,7 @@ export default function Header({ providers = {} }: { providers: any }) {
               if (/google/i.test(provider.name)) icon = <GoogleOutlined />;
               if (/facebook/i.test(provider.name)) icon = <FacebookOutlined />;
               if (/github/i.test(provider.name)) icon = <GithubOutlined />;
+              if (/twitter/i.test(provider.name)) icon = <TwitterOutlined />;
               if (/StandaloneMode/i.test(provider.name)) icon = null;
 
               return (

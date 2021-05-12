@@ -86,12 +86,15 @@ if (process.env.STANDALONEMODE) {
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     })
   );
+
+  /*
   options.providers.push(
     Providers.Twitter({
       clientId: process.env.TWITTER_CLIENT_ID,
       clientSecret: process.env.TWITTER_CLIENT_SECRET,
     })
   );
+  */
 }
 export default (req: NextApiRequest, res: NextApiResponse) =>
   NextAuth(req, res, options);

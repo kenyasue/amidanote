@@ -92,6 +92,8 @@
         height: auto;
         overflow-x: hidden;
       }
+
+      @import "./swagger/main.scss";
     }
     .markdown-view {
       .title-hodler {
@@ -103,6 +105,12 @@
 
         position: relative;
 
+        .format-selector {
+          position: absolute;
+          right: 180px;
+          top: 30px;
+          width: 150px;
+        }
         .delete-btn {
           position: absolute;
           right: 20px;

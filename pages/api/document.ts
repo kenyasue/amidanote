@@ -132,6 +132,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const markdown: string = req.body.markdown;
   const title: string = req.body.title;
+  const format: string = req.body.format;
   const projectId: number = parseInt(req.body.projectId);
 
   if (utils.isEmpty(title)) return res.status(400).send("title is required");
@@ -155,6 +156,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   const newDocument = await prisma.document.create({
     data: {
       title: title,
+      format: format,
       markdown: markdown,
       user: {
         connect: { id: user.id },

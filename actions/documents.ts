@@ -92,6 +92,7 @@ export const actionCreateNewDocument = async (
     data: {
       projectId: projectId,
       title: newTitle,
+      format: "markdown",
       markdown: "",
     },
   });
@@ -129,6 +130,7 @@ export const actionSaveCurrentDocument = async (
   dispatch: Dispatch<Action>,
   document: Document
 ) => {
+  console.log("save document", document);
   const documentResponse = await axios({
     method: "put",
     url: `/api/document/${document.id}`,
@@ -137,12 +139,12 @@ export const actionSaveCurrentDocument = async (
     },
     data: {
       title: document.title,
+      format: document.format,
       markdown: document.markdown,
     },
   });
 
   notificationActions.showInfo(state, dispatch, "Document saved");
-
   actionUpdateCurrentDocument(state, dispatch, document, true);
 };
 
@@ -157,6 +159,7 @@ export const actionUpdateCurrentDocument = async (
   // switch instance in the case active document is not belongs to the document list ary
   const documentList: Array<Document> = state.documents;
   const docInstance = documentList.find((doc) => doc.id === document.id);
+
   if (docInstance) {
     // replace instances
     if (docInstance !== document) {

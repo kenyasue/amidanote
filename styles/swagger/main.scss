@@ -1,0 +1,48 @@
+.swagger-ui {
+  @import "mixins";
+  @import "variables";
+  @import "type";
+  @import "layout";
+  @import "buttons";
+  @import "form";
+  @import "modal";
+  @import "models";
+  @import "servers";
+  @import "table";
+  @import "topbar";
+  @import "information";
+  @import "authorize";
+  @import "errors";
+  @include text_body();
+  @import "split-pane-mode";
+  @import "markdown";
+
+  background-color: #121212;
+  height: auto;
+  padding: 0px;
+  margin: 0px;
+
+  pre {
+    color: $concrete-gray;
+    padding: 0px;
+    border: none;
+    background-color: transparent;
+
+    code {
+      background-color: transparent;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: $white;
+  }
+
+  select {
+    color: $cod-gray;
+  }
+}

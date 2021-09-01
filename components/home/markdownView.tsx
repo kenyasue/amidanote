@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 
 import axios from "axios";
-import { Typography, Row, Col, Input, Button, Modal } from "antd";
+import { Typography, Row, Col, Input, Button, Modal, Select } from "antd";
 import { ConsoleSqlOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Controlled as CodeMirror } from "react-codemirror2";
 
 import useActions from "../../actions/useActions";
 import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
 import utils from "../../lib/util";
+import * as constants from "../../lib/const";
 
 const component = () => {
   const state = useStateContext();
@@ -55,6 +56,23 @@ const component = () => {
               actionRenderMenu();
             }}
           />
+
+          <Select
+            className="format-selector"
+            onSelect={(val) => {
+              state.selectedDocument.format = val;
+              actionUpdateCurrentDocument(state.selectedDocument, false);
+              actionRenderMenu();
+            }}
+            value={state.selectedDocument.format}
+          >
+            <Select.Option value={constants.FORMAT_MARKDOWN}>
+              Markdown
+            </Select.Option>
+            <Select.Option value={constants.FORMAT_SWAGGER}>
+              Swagger
+            </Select.Option>
+          </Select>
 
           {utils.isMobile() ? (
             <Button

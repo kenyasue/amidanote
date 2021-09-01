@@ -1,6 +1,6 @@
 import type { document as Document } from "@prisma/client";
 import { Menu } from "antd";
-
+import * as constants from "../lib/const";
 const { SubMenu } = Menu;
 
 export const constructMenu = (documents: Array<Document>) => {
@@ -58,6 +58,12 @@ export const renderMenu = (branch: any, onSelect: Function) => {
             onSelect(document);
           }}
         >
+          {document.format === constants.FORMAT_SWAGGER ? (
+            <img src="/images/swagger_icon.svg" height="16" />
+          ) : (
+            <img src="/images/markdown_icon.svg" height="16" />
+          )}
+          &nbsp;&nbsp;
           {document.title.split("/").pop()}
         </Menu.Item>
       );

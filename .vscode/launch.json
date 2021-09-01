@@ -5,25 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Core",
             "type": "node",
-            "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "runtimeExecutable": "/home/ken/.nvm/versions/node/v14.13.1/bin/npm",
-            "runtimeArgs": [
-                "run",
-                "dev"
+            "request": "attach",
+            "name": "Attach to application",
+            "skipFiles": [
+                "<node_internals>/**"
             ],
-            "console": "internalConsole",
-            "internalConsoleOptions": "neverOpen",
-            "outputCapture": "std"
-        },
-        {
-            "name": "Docker Node.js Launch",
-            "type": "docker",
-            "request": "launch",
-            "preLaunchTask": "docker-run: debug",
-            "platform": "node"
+            "port": 9229
         }
     ]
 }

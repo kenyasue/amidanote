@@ -112,6 +112,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const markdown: string = req.body.markdown;
   const title: string = req.body.title;
+  const format: string = req.body.format;
   const folderId: number = req.body.folderId;
 
   if (utils.isEmpty(title)) return res.status(400).send("title is required");
@@ -129,6 +130,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
     where: { id: documentId },
     data: {
       title: title,
+      format: format,
       markdown: markdown,
     },
   });

@@ -108,6 +108,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
       user: {
         connect: { id: user.id },
       },
+      collaborators: "",
     },
   });
 

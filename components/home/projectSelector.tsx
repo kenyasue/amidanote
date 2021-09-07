@@ -10,16 +10,18 @@ import {
   Select,
   Modal,
   Switch,
-  Form,
+  AutoComplete,
   message,
 } from "antd";
 const { Option } = Select;
+import type { User } from "@prisma/client";
 
 const { Search } = Input;
 import {
   SettingOutlined,
   FileAddOutlined,
   DiffOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 
@@ -32,6 +34,7 @@ import ProjectSelector from "../../components/home/projectSelector";
 
 import useActions from "../../actions/useActions";
 import utils from "../../lib/util";
+import { setegid } from "process";
 
 const component = () => {
   const { actionLoadProjects, actionSetCurrentProjectId } = useActions();
@@ -49,6 +52,11 @@ const component = () => {
   const [isPrivate, setIsPrivate] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isProcessingDelete, setIsProcessingDelete] = useState(false);
+  const [collaboratorsOptions, setCollaboratorsOptions] = useState<
+    { value: string }[]
+  >([]);
+  const [collaborators, setCollaborators] = useState<Array<string>>([]);
+  const [collaboratorEmail, setCollaboratorEmail] = useState<string>("");
 
   const newProject = async () => {
     let isError = false;
@@ -131,10 +139,18 @@ const component = () => {
         data: {
           name: projectName,
           isPrivate: isPrivate,
+          collaborators: collaborators.reduce(
+            (email: string, result: string) => {
+              return result + "," + email;
+            },
+            ""
+          ),
         },
       });
 
       setIsProcessing(false);
+      setCollaborators([]);
+      setCollaboratorEmail("");
       actionLoadProjects();
       setShowEditProjectModal(false);
       actionSetCurrentProjectId(projectResponse.data.id);
@@ -256,6 +272,11 @@ const component = () => {
               state.selectedProject && state.selectedProject.isPrivate
             );
             setShowEditProjectModal(true);
+            setCollaborators(
+              state.selectedProject.collaborators
+                .split(",")
+                .filter((email) => email !== "")
+            );
           }}
         />
       </Tooltip>
@@ -386,6 +407,71 @@ const component = () => {
               onChange={(checked) => setIsPrivate(checked)}
               checked={isPrivate}
             />
+          </Col>
+          <Col span={8}>Contributers</Col>
+          <Col span={10}>
+            <AutoComplete
+              value={collaboratorEmail}
+              options={collaboratorsOptions}
+              style={{ width: 220 }}
+              onSelect={(value) => {
+                setCollaboratorEmail("");
+                if (collaborators.indexOf(value) !== -1) return;
+
+                collaborators.push(value);
+                setCollaborators(collaborators);
+              }}
+              onSearch={async (value) => {
+                // search user
+                const users = await axios({
+                  method: "get",
+                  url: `/api/user?email=${value}`,
+                  headers: {
+                    acceesstoken: state.accessToken,
+                  },
+                });
+
+                // remove myself
+                const usersFiltered = users.data.filter((user: any) => {
+                  return user.email !== state.userSignedIn.email;
+                });
+
+                if (usersFiltered)
+                  setCollaboratorsOptions(
+                    usersFiltered.map((user: User) => {
+                      return {
+                        value: user.email,
+                      };
+                    })
+                  );
+              }}
+              onChange={(val) => setCollaboratorEmail(val)}
+              placeholder="input here"
+            />
+          </Col>
+          <Col span={8}></Col>
+          <Col span={10}>
+            <Row>
+              {collaborators.map((email) => {
+                return (
+                  <>
+                    <Col span={18}>{email}</Col>
+                    <Col span={6} style={{ textAlign: "right" }}>
+                      <DeleteOutlined
+                        className="pointer"
+                        onClick={() => {
+                          setCollaborators(
+                            collaborators.filter(
+                              (emailSelected) => emailSelected !== email
+                            )
+                          );
+                        }}
+                      />
+                    </Col>
+                  </>
+                );
+              })}
+            </Row>
           </Col>
         </Row>
       </Modal>

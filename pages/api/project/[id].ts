@@ -115,6 +115,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
   const projectId: number = parseInt(id);
 
   const name: string = req.body.name;
+  const collaborators: string = req.body.collaborators;
   const isPrivate: boolean = req.body.isPrivate ? req.body.isPrivate : false;
 
   if (utils.isEmpty(name)) return res.status(400).send("name is required");
@@ -133,6 +134,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
     data: {
       name: name,
       isPrivate: isPrivate,
+      collaborators: collaborators,
     },
   });
 

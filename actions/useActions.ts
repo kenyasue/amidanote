@@ -1,6 +1,8 @@
-import type { file as fileModel, document as Document } from "@prisma/client";
-
-import { User } from "next-auth";
+import type {
+  file as fileModel,
+  document as Document,
+  User,
+} from "@prisma/client";
 
 import {
   useStateContext,

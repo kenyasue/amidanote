@@ -17,7 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const password = request.body.password;
 
   if (username === "username" && password === "password") {
-    req.body.user = { user: 1 };
+    req.body.user = { user: 5 };
 
     const code = await oauthServer.authorize(request, response, {
       authenticateHandler: {

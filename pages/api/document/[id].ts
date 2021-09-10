@@ -123,8 +123,18 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
     },
   });
 
+  const project = await prisma.project.findFirst({
+    where: {
+      id: document.projectId,
+    },
+  });
+
   if (document === null) return res.status(404).send("Document not found");
-  if (document.userId !== user.id) return res.status(403).send("forbidden");
+  if (
+    document.userId !== user.id &&
+    project.collaborators.indexOf(user.email) === -1
+  )
+    return res.status(403).send("forbidden");
 
   const updatedDocument = await prisma.document.update({
     where: { id: documentId },

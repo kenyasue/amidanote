@@ -67,7 +67,11 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     const user = await checkAuth(req.headers.acceesstoken as string);
     if (!user) return res.status(403).send("Forbidden");
 
-    if (project.userId !== user.id) return res.status(403).send("forbidden");
+    if (
+      project.userId !== user.id &&
+      project.collaborators.indexOf(user.email) === -1
+    )
+      return res.status(403).send("forbidden");
   }
 
   res.json(project);
@@ -115,6 +119,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
   const projectId: number = parseInt(id);
 
   const name: string = req.body.name;
+  const collaborators: string = req.body.collaborators;
   const isPrivate: boolean = req.body.isPrivate ? req.body.isPrivate : false;
 
   if (utils.isEmpty(name)) return res.status(400).send("name is required");
@@ -133,6 +138,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
     data: {
       name: name,
       isPrivate: isPrivate,
+      collaborators: collaborators,
     },
   });
 

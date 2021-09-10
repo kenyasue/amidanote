@@ -25,10 +25,11 @@ model document {
 
 model project {
   id          Int         @id @default(autoincrement())
-  user        User        @relation(fields: [userId], references: [id])
+  user        User        @relation(fields: [userId], references: [id],name:"owner")
   userId      Int         @default(0)
   name        String      @default("")
   isPrivate   Boolean     @default(false)
+  collaborators String      
   createdAt   DateTime    @default(now())
   modifiedAt  DateTime    @default(now())
 }

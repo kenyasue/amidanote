@@ -69,8 +69,14 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (!project) return res.status(404).send("No Project");
 
-    if (project.isPrivate === true && (!user || project.userId !== user.id))
-      return res.status(403).send("Forbidden");
+    if (project.isPrivate === true) {
+      if (
+        !user ||
+        (project.userId !== user.id &&
+          project.collaborators.indexOf(user.email) === -1)
+      )
+        return res.status(403).send("Forbidden");
+    }
 
     // switch owner use to project one in case project is public
     if (project.isPrivate === false) conditions.userId = project.userId;
@@ -80,6 +86,9 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
   // access denied if no projectid and no access token
   if (projectId === 0 && !user) return res.status(403).send("Forbidden");
+
+  if (user && project.collaborators.indexOf(user.email) !== -1)
+    delete conditions.userId;
 
   const allDocuments = await prisma.document.findMany({
     where: conditions,

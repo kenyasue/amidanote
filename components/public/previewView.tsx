@@ -5,7 +5,9 @@ import gfm from "remark-gfm";
 import remarkCodeFrontmatter from "remark-code-frontmatter";
 import highlight from "remark-syntax-highlight";
 import highlightJS from "highlight.js";
+import SwaggerUI from "swagger-ui-react";
 import accessTokenPlugin from "../../lib/remarkPlugins/accessToken";
+import * as constants from "../../lib/const";
 
 const { Title } = Typography;
 import { useStateContext, useDispatchContext } from "../../lib/reducer/context";
@@ -34,25 +36,31 @@ const component = ({ defaultDocument }: { defaultDocument: Document }) => {
       <Row className="preview-top">
         <Col span={24} className="preview">
           <Title level={2}>{title}</Title>
-          <ReactMarkdown
-            plugins={[
-              gfm,
-              remarkCodeFrontmatter,
-              [
-                highlight,
-                {
-                  highlight: (code: any) => {
-                    return highlightJS.highlightAuto(code).value;
+          {state.selectedDocument.format === constants.FORMAT_SWAGGER ? (
+            <SwaggerUI
+              url={`/api/document/rawContent/${state.selectedDocument.id}`}
+            />
+          ) : (
+            <ReactMarkdown
+              plugins={[
+                gfm,
+                remarkCodeFrontmatter,
+                [
+                  highlight,
+                  {
+                    highlight: (code: any) => {
+                      return highlightJS.highlightAuto(code).value;
+                    },
                   },
-                },
-              ],
-              [accessTokenPlugin, { accessToken: null }],
-            ]}
-            linkTarget="_blank"
-            allowDangerousHtml={true}
-          >
-            {displayDocument.markdown}
-          </ReactMarkdown>
+                ],
+                [accessTokenPlugin, { accessToken: null }],
+              ]}
+              linkTarget="_blank"
+              allowDangerousHtml={true}
+            >
+              {displayDocument.markdown}
+            </ReactMarkdown>
+          )}
         </Col>
       </Row>
     </>

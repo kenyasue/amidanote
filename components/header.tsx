@@ -50,20 +50,31 @@ export default function Header({ providers = {} }: { providers: any }) {
     // redirect to home after signin
     else if (session && router.pathname !== "/") {
       (async () => {
-        actionSignIn(session.user, session.accessToken);
+        //
+        const user = await axios({
+          method: "get",
+          url: `/api/user?email=${session.user.email}`,
+          headers: {
+            acceesstoken: session.accessToken,
+          },
+        });
 
-        if (router.pathname === "/home") {
-          // get default project
-          const defaultProject = await axios({
-            method: "get",
-            url: "/api/project/default",
-            headers: {
-              acceesstoken: session.accessToken,
-            },
-          });
+        if (user && user.data && user.data[0]) {
+          actionSignIn(user.data[0], session.accessToken);
 
-          router.push(`/project/${defaultProject.data.id}`);
-        } else {
+          if (router.pathname === "/home") {
+            // get default project
+            const defaultProject = await axios({
+              method: "get",
+              url: "/api/project/default",
+              headers: {
+                acceesstoken: session.accessToken,
+              },
+            });
+
+            router.push(`/project/${defaultProject.data.id}`);
+          } else {
+          }
         }
       })();
     }

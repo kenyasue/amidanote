@@ -1,5 +1,4 @@
-import type { document as Document, project } from "@prisma/client";
-import { User } from "next-auth";
+import type { document as Document, project, User } from "@prisma/client";
 
 import { ActionTypes } from "./actionTypes";
 

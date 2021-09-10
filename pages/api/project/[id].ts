@@ -67,7 +67,11 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     const user = await checkAuth(req.headers.acceesstoken as string);
     if (!user) return res.status(403).send("Forbidden");
 
-    if (project.userId !== user.id) return res.status(403).send("forbidden");
+    if (
+      project.userId !== user.id &&
+      project.collaborators.indexOf(user.email) === -1
+    )
+      return res.status(403).send("forbidden");
   }
 
   res.json(project);

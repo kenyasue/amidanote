@@ -47,17 +47,33 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await checkAuth(req.headers.acceesstoken as string);
   if (!user) return res.status(403).send("Forbidden");
 
-  if (!req.query || !req.query.email) return res.send([]);
-
   const email: string = req.query.email as string;
 
-  const allUsers = await prisma.user.findMany({
-    where: {
-      email: {
-        startsWith: email,
+  if (email) {
+    const allUsers = await prisma.user.findMany({
+      where: {
+        email: {
+          startsWith: email,
+        },
       },
-    },
-    take: 5,
-  });
-  res.send(allUsers);
+      take: 5,
+    });
+    return res.send(allUsers);
+  }
+
+  const idStr: string = req.query.id as string;
+
+  console.log("idStr", idStr);
+
+  if (idStr) {
+    console.log("idStr", idStr);
+    const user = await prisma.user.findUnique({
+      where: {
+        id: parseInt(idStr),
+      },
+    });
+    return res.send(user);
+  }
+
+  res.send([]);
 };

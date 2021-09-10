@@ -51,7 +51,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const allProjects = await prisma.project.findMany({
     where: {
-      userId: user.id,
+      OR: [{ userId: user.id }, { collaborators: { contains: user.email } }],
     },
     orderBy: [
       {

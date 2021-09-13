@@ -63,8 +63,6 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const idStr: string = req.query.id as string;
 
-  console.log("idStr", idStr);
-
   if (idStr) {
     console.log("idStr", idStr);
     const user = await prisma.user.findUnique({

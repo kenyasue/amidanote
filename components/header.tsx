@@ -52,17 +52,18 @@ export default function Header({ providers = {} }: { providers: any }) {
     // redirect to home after signin
     else if (session && router.pathname !== "/") {
       (async () => {
-        //
+        console.log("session", session);
+        const newUser: any = { ...session.user }; // hack for TS
         const user = await axios({
           method: "get",
-          url: `/api/user?email=${session.user.email}`,
+          url: `/api/user?id=${newUser.id}`,
           headers: {
             acceesstoken: session.accessToken,
           },
         });
 
-        if (user && user.data && user.data[0]) {
-          actionSignIn(user.data[0], session.accessToken);
+        if (user && user.data) {
+          actionSignIn(user.data, session.accessToken);
 
           if (router.pathname === "/home") {
             // get default project

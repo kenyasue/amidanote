@@ -37,6 +37,8 @@ export default function Header({ providers = {} }: { providers: any }) {
       return;
     }
 
+    console.log("session", session);
+
     if (
       !loading &&
       !session &&

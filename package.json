@@ -12,7 +12,6 @@
   "dependencies": {
     "@ant-design/icons": "4.2.1",
     "@next/bundle-analyzer": "^9.1.4",
-    "@prisma/client": "^2.30.3",
     "@zeit/next-css": "^1.0.1",
     "antd": "4.3.0",
     "axios": "^0.21.1",

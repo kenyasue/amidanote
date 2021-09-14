@@ -50,8 +50,7 @@
     "swagger-ui-react": "^3.38.0",
     "swr": "^0.3.11",
     "unist-util-is": "^4.1.0",
-    "unist-util-visit": "^2.0.3",
-    "webpack": "^5.23.0"
+    "unist-util-visit": "^2.0.3"
   },
   "browser": {
     "fs": false,

@@ -125,6 +125,8 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (utils.isEmpty(name)) return res.status(400).send("name is required");
 
+  console.log("projectId",projectId);
+
   const project = await prisma.project.findFirst({
     where: {
       id: projectId,
@@ -138,6 +140,8 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
     .split(",")
     .filter((userId: string) => !!userId)
     .map((userId: string) => parseInt(userId));
+
+  console.log("collaboratorsFilterd",collaboratorsFilterd);
 
   // delete all collaborators first
   await prisma.collaboratorsOnProjects.deleteMany({

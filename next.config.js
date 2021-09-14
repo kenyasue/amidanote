@@ -3,6 +3,7 @@ const path = require('path')
 const Dotenv = require('dotenv-webpack')
 
 module.exports = {
+  webpack5: false,
   typescript: {
     // Pls fix this in the future
     ignoreBuildErrors: true,
@@ -40,4 +41,5 @@ module.exports = {
         
     return config
   }
+  
 }

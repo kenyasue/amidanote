@@ -146,6 +146,8 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
     },
   });
 
+  console.log("collaboratorsFilterd",collaboratorsFilterd);
+
   const updatedProject = await prisma.project.update({
     where: { id: projectId },
     data: {

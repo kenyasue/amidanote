@@ -6,6 +6,7 @@ import { unlink } from "fs/promises";
 
 import utils from "../../../lib/util";
 import checkAuth from "../../../lib/api/checkAuth";
+import { parse } from "path";
 
 export default async function documentHandler(
   req: NextApiRequest,
@@ -68,8 +69,8 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!user) return res.status(403).send("Forbidden");
 
     if (
-      project.userId !== user.id &&
-      project.collaborators.indexOf(user.email) === -1
+      project.userId !== user.id
+      // && project.collaborators.indexOf(user.email) === -1
     )
       return res.status(403).send("forbidden");
   }
@@ -133,12 +134,31 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
   if (project === null) return res.status(404).send("Document not found");
   if (project.userId !== user.id) return res.status(403).send("forbidden");
 
+  const collaboratorsFilterd: Array<number> = collaborators
+    .split(",")
+    .filter((userId: string) => !!userId)
+    .map((userId: string) => parseInt(userId));
+
+  // delete all collaborators first
+  await prisma.collaboratorsOnProjects.deleteMany({
+    where: {
+      projectId: projectId,
+    },
+  });
+
   const updatedProject = await prisma.project.update({
     where: { id: projectId },
     data: {
       name: name,
       isPrivate: isPrivate,
-      collaborators: collaborators,
+      collaborators: {
+        connectOrCreate: collaboratorsFilterd.map((userId) => {
+          return {
+            where: { id: userId },
+            create: { User: { connect: { id: userId } } },
+          };
+        }),
+      },
     },
   });
 

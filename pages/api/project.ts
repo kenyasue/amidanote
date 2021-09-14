@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 
 import utils from "../../lib/util";
 import checkAuth from "../../lib/api/checkAuth";
+import { Result } from "antd";
 
 export default async function documentHandler(
   req: NextApiRequest,
@@ -51,14 +52,47 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const allProjects = await prisma.project.findMany({
     where: {
-      OR: [{ userId: user.id }, { collaborators: { contains: user.email } }],
+      //OR: [{ userId: user.id }, { collaborators: { contains: user.email } }],
+      OR: [
+        { userId: user.id },
+        { collaborators: { some: { userId: user.id } } },
+      ],
     },
     orderBy: [
       {
         name: "asc",
       },
     ],
+    include: {
+      collaborators: { include: { User: true } },
+    },
   });
+
+  /*
+  const collaboratorIds = allProjects.reduce<Array<number>>((allIds, cur) => {
+    const collaboratorsStr: string = cur.collaborators;
+    const collaboratorIdsAry: Array<string> = collaboratorsStr.split(",");
+    const collaboratorIdsAryMerged: Array<number> = collaboratorIdsAry.reduce<
+      Array<number>
+    >((result, idStr) => {
+      if (idStr && idStr.length > 0) result.push(parseInt(idStr));
+      return [...result];
+    }, []);
+
+    allIds = [...allIds, ...collaboratorIdsAryMerged];
+
+    return allIds;
+  }, []);
+
+  const users = await prisma.user.findMany({
+    where: {
+      id: {
+        in: collaboratorIds,
+      },
+    },
+  });
+  */
+
   res.send(allProjects);
 };
 
@@ -108,7 +142,6 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
       user: {
         connect: { id: user.id },
       },
-      collaborators: "",
     },
   });
 

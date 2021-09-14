@@ -7,9 +7,9 @@ const db = { // Here is a fast overview of what your db model should look like
     redirectUri: `${process.env.NEXTAUTH_URL}/api/auth/callback/standalone`, // A string of where to redirect to with this code
     client: null, // See the client section
     user: {
-      id: "1",
-      name: "Standalone",
-      email: "standalone@clover.studio",
+      id: "3",
+      name: "Standalone3",
+      email: "standalone3@clover.studio",
       image: "test",
     }, // Whatever you want... This is where you can be flexible with the protocol
   },

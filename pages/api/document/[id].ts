@@ -7,6 +7,7 @@ import { unlink } from "fs/promises";
 import utils from "../../../lib/util";
 import checkAuth from "../../../lib/api/checkAuth";
 import { DeleteFilled } from "@ant-design/icons";
+import { ProjectWithCollaborators } from "../../../lib/customModels";
 
 export default async function documentHandler(
   req: NextApiRequest,
@@ -123,16 +124,19 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
     },
   });
 
-  const project = await prisma.project.findFirst({
+  const project: ProjectWithCollaborators = await prisma.project.findFirst({
     where: {
       id: document.projectId,
+    },
+    include: {
+      collaborators: { include: { User: true } },
     },
   });
 
   if (document === null) return res.status(404).send("Document not found");
   if (
     document.userId !== user.id &&
-    project.collaborators.indexOf(user.email) === -1
+    !project.collaborators.find((row) => row.userId === user.id)
   )
     return res.status(403).send("forbidden");
 

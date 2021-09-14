@@ -1,4 +1,5 @@
 import type { document as Document, project, User } from "@prisma/client";
+import type { ProjectWithCollaborators } from "../../lib/customModels";
 
 import { ActionTypes } from "./actionTypes";
 
@@ -11,9 +12,9 @@ export interface GlobalState {
   userSignedIn: User;
   accessToken: string;
   documentSearchKeyword: string;
-  projects: Array<project>;
+  projects: Array<ProjectWithCollaborators>;
   currentProjectId: number;
-  selectedProject: project;
+  selectedProject: ProjectWithCollaborators;
   notificationMessageInfo: string;
   uploadProgress: number;
 }

@@ -7,53 +7,63 @@ datasource db {
 }
 
 generator client {
-  provider      = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 model document {
-  id          Int         @id @default(autoincrement())
-  user        User        @relation(fields: [userId], references: [id])
-  userId      Int         @default(0)
-  project     project     @relation(fields: [projectId], references: [id])
-  projectId   Int         @default(0)
-  title       String      @default("")
-  markdown    String      @default("")
-  format      String      @default("markdown")
-  createdAt   DateTime    @default(now())
-  modifiedAt  DateTime    @default(now())
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int      @default(0)
+  project    project  @relation(fields: [projectId], references: [id])
+  projectId  Int      @default(0)
+  title      String   @default("")
+  markdown   String   @default("")
+  format     String   @default("markdown")
+  createdAt  DateTime @default(now())
+  modifiedAt DateTime @default(now())
+  file       file[]
 }
 
 model project {
-  id          Int         @id @default(autoincrement())
-  user        User        @relation(fields: [userId], references: [id],name:"owner")
-  userId      Int         @default(0)
-  name        String      @default("")
-  isPrivate   Boolean     @default(false)
-  collaborators String      
-  createdAt   DateTime    @default(now())
-  modifiedAt  DateTime    @default(now())
+  id            Int                       @id @default(autoincrement())
+  user          User                      @relation(fields: [userId], references: [id], name: "owner")
+  userId        Int                       @default(0)
+  name          String                    @default("")
+  isPrivate     Boolean                   @default(false)
+  collaborators CollaboratorsOnProjects[]
+  createdAt     DateTime                  @default(now())
+  modifiedAt    DateTime                  @default(now())
+  document      document[]
+  file          file[]
+}
+
+model CollaboratorsOnProjects {
+  id        Int      @id @default(autoincrement())
+  Project   project? @relation(fields: [projectId], references: [id])
+  projectId Int? // relation scalar field (used in the `@relation` attribute above)
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    Int? // relation scalar field (used in the `@relation` attribute above)
 }
 
 model file {
-  id              Int         @id @default(autoincrement())
-  user            User        @relation(fields: [userId], references: [id])
-  userId          Int         @default(0)
-  project         project     @relation(fields: [projectId], references: [id])
-  projectId       Int         @default(0)
-  document        document    @relation(fields: [documentId], references: [id])
-  documentId      Int         @default(0)
-  path            String      @default("")
-  thumbnailPath   String      @default("")
-  size            Int         @default(0)
-  name            String      @default("")
-  mimeType        String      @default("")
-  createdAt       DateTime    @default(now())
-  modifiedAt      DateTime    @default(now())
+  id            Int      @id @default(autoincrement())
+  user          User     @relation(fields: [userId], references: [id])
+  userId        Int      @default(0)
+  project       project  @relation(fields: [projectId], references: [id])
+  projectId     Int      @default(0)
+  document      document @relation(fields: [documentId], references: [id])
+  documentId    Int      @default(0)
+  path          String   @default("")
+  thumbnailPath String   @default("")
+  size          Int      @default(0)
+  name          String   @default("")
+  mimeType      String   @default("")
+  createdAt     DateTime @default(now())
+  modifiedAt    DateTime @default(now())
 }
 
-
 model Account {
-  id                 Int       @default(autoincrement()) @id
+  id                 Int       @id @default(autoincrement())
   compoundId         String    @unique @map(name: "compound_id")
   userId             Int       @map(name: "user_id")
   providerType       String    @map(name: "provider_type")
@@ -65,15 +75,11 @@ model Account {
   createdAt          DateTime  @default(now()) @map(name: "created_at")
   updatedAt          DateTime  @default(now()) @map(name: "updated_at")
 
-  @@index([providerAccountId], name: "providerAccountId")
-  @@index([providerId], name: "providerId")
-  @@index([userId], name: "userId")
-
   @@map(name: "accounts")
 }
 
 model Session {
-  id           Int      @default(autoincrement()) @id
+  id           Int      @id @default(autoincrement())
   userId       Int      @map(name: "user_id")
   expires      DateTime
   sessionToken String   @unique @map(name: "session_token")
@@ -85,24 +91,28 @@ model Session {
 }
 
 model User {
-  id            Int       @default(autoincrement()) @id
+  id            Int                       @id @default(autoincrement())
   name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map(name: "email_verified")
+  email         String?                   @unique
+  emailVerified DateTime?                 @map(name: "email_verified")
   image         String?
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @default(now()) @map(name: "updated_at")
+  createdAt     DateTime                  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime                  @default(now()) @map(name: "updated_at")
+  projects      CollaboratorsOnProjects[]
 
   @@map(name: "users")
+  document document[]
+  project  project[]  @relation("owner")
+  file     file[]
 }
 
 model VerificationRequest {
-  id         Int      @default(autoincrement()) @id
+  id         Int      @id @default(autoincrement())
   identifier String
   token      String   @unique
   expires    DateTime
-  createdAt  DateTime  @default(now()) @map(name: "created_at")
-  updatedAt  DateTime  @default(now()) @map(name: "updated_at")
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+  updatedAt  DateTime @default(now()) @map(name: "updated_at")
 
   @@map(name: "verification_requests")
 }

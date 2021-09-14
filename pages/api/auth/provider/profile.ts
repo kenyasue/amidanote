@@ -23,9 +23,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   res.json({
-    id: "1",
-    name: "Standalone",
-    email: "standalone@clover.studio",
+    id: "3",
+    name: "Standalone3",
+    email: "standalone3@clover.studio",
     image: "test",
   });
 };

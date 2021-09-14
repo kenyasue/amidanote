@@ -12,7 +12,7 @@
   "dependencies": {
     "@ant-design/icons": "4.2.1",
     "@next/bundle-analyzer": "^9.1.4",
-    "@prisma/client": "^2.14.0",
+    "@prisma/client": "^2.30.3",
     "@zeit/next-css": "^1.0.1",
     "antd": "4.3.0",
     "axios": "^0.21.1",
@@ -35,6 +35,7 @@
     "node-sass": "^5.0.0",
     "oauth2-server": "^3.1.1",
     "postcss-preset-env": "^6.7.0",
+    "prisma": "^3.0.2",
     "react": "^16.13.1",
     "react-codemirror2": "^7.2.1",
     "react-dom": "^16.13.1",

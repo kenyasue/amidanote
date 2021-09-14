@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, project } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 const prisma = new PrismaClient();
+import { ProjectWithCollaborators } from "../../lib/customModels";
 
 import utils from "../../lib/util";
 import checkAuth from "../../lib/api/checkAuth";
@@ -44,7 +45,7 @@ export default async function documentHandler(
  *                $ref: '#/components/schemas/Document'
  */
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
-  let user = null;
+  let user: User = null;
 
   if (req.headers.acceesstoken)
     user = await checkAuth(req.headers.acceesstoken as string);
@@ -58,12 +59,15 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     userId: user ? user.id : 0,
   };
 
-  let project: project = null;
+  let project: ProjectWithCollaborators = null;
 
   if (projectId !== 0) {
     project = await prisma.project.findFirst({
       where: {
         id: projectId,
+      },
+      include: {
+        collaborators: { include: { User: true } },
       },
     });
 
@@ -73,7 +77,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
       if (
         !user ||
         (project.userId !== user.id &&
-          project.collaborators.indexOf(user.email) === -1)
+          !project.collaborators.find((row) => row.userId === user.id))
       )
         return res.status(403).send("Forbidden");
     }
@@ -87,7 +91,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   // access denied if no projectid and no access token
   if (projectId === 0 && !user) return res.status(403).send("Forbidden");
 
-  if (user && project.collaborators.indexOf(user.email) !== -1)
+  if (user && project.collaborators.find((row) => row.userId === user.id))
     delete conditions.userId;
 
   const allDocuments = await prisma.document.findMany({

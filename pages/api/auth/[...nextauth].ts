@@ -2,8 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
 import Adapters from "next-auth/adapters";
-import { PrismaClient } from "@prisma/client";
-let prisma;
+import { PrismaClient, Account } from "@prisma/client";
+let prisma: PrismaClient;
 // ローカルでは大量にデータベースコネクションを張ってしまうことがあるので、
 // このようなアプローチをとる。TypeScript が global type に prisma がないと怒るので、
 // ルートディレクトリに global.d.ts を作成し、
@@ -34,6 +34,26 @@ const options = {
   },
   adapter: Adapters.Prisma.Adapter({ prisma }),
   debug: true,
+  callbacks: {
+    async signIn(param: any) {
+      console.log("user signin", param);
+      return true;
+    },
+    async session(param: any) {
+      console.log("session", param);
+
+      // get user id from access token
+
+      const session = await prisma.session.findUnique({
+        where: {
+          accessToken: param.accessToken as string,
+        },
+      });
+
+      if (session) param.user.id = session.userId;
+      return param;
+    },
+  },
 };
 
 if (process.env.STANDALONEMODE) {

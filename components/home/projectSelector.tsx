@@ -14,7 +14,7 @@ import {
   message,
 } from "antd";
 const { Option } = Select;
-import type { User } from "@prisma/client";
+import type { User, project } from "@prisma/client";
 
 const { Search } = Input;
 import {
@@ -37,6 +37,12 @@ import useActions from "../../actions/useActions";
 import utils from "../../lib/util";
 import { setegid } from "process";
 
+interface ICollaboratorOpt {
+  id: number;
+  email: string;
+  value: string;
+}
+
 const component = () => {
   const { actionLoadProjects, actionSetCurrentProjectId } = useActions();
   const router = useRouter();
@@ -54,9 +60,9 @@ const component = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isProcessingDelete, setIsProcessingDelete] = useState(false);
   const [collaboratorsOptions, setCollaboratorsOptions] = useState<
-    { value: string }[]
+    ICollaboratorOpt[]
   >([]);
-  const [collaborators, setCollaborators] = useState<Array<string>>([]);
+  const [collaborators, setCollaborators] = useState<ICollaboratorOpt[]>([]);
   const [collaboratorEmail, setCollaboratorEmail] = useState<string>("");
   const [projectOwner, setProjectOwner] = useState<User>(null);
 
@@ -73,6 +79,17 @@ const component = () => {
       });
 
       if (ownerUser) setProjectOwner(ownerUser.data);
+
+      const collaboratorsTmp: ICollaboratorOpt[] =
+        state.selectedProject.collaborators.map((collaborators) => {
+          return {
+            id: collaborators.User.id,
+            email: collaborators.User.email,
+            value: collaborators.User.email,
+          };
+        });
+
+      setCollaborators(collaboratorsTmp);
     })();
   }, [state.selectedProject]);
 
@@ -157,9 +174,9 @@ const component = () => {
         data: {
           name: projectName,
           isPrivate: isPrivate,
-          collaborators: collaborators.reduce(
-            (email: string, result: string) => {
-              return result + "," + email;
+          collaborators: collaborators.reduce<string>(
+            (result: string, opt: ICollaboratorOpt) => {
+              return result + "," + opt.id;
             },
             ""
           ),
@@ -303,11 +320,14 @@ const component = () => {
               state.selectedProject && state.selectedProject.isPrivate
             );
             setShowEditProjectModal(true);
+
+            /*
             setCollaborators(
               state.selectedProject.collaborators
                 .split(",")
                 .filter((email) => email !== "")
             );
+            */
           }}
         />
       </Tooltip>
@@ -468,11 +488,16 @@ const component = () => {
                 options={collaboratorsOptions}
                 style={{ width: 220 }}
                 onSelect={(value) => {
-                  setCollaboratorEmail("");
-                  if (collaborators.indexOf(value) !== -1) return;
+                  const option = collaboratorsOptions.find(
+                    (opt) => opt.email === value
+                  );
 
-                  collaborators.push(value);
-                  setCollaborators(collaborators);
+                  setCollaboratorEmail("");
+                  if (collaborators.find((opt) => opt.email === value)) return;
+
+                  collaborators.push(option);
+                  setCollaborators([...collaborators]);
+                  setCollaboratorsOptions([]);
                 }}
                 onSearch={async (value) => {
                   // search user
@@ -494,6 +519,8 @@ const component = () => {
                       usersFiltered.map((user: User) => {
                         return {
                           value: user.email,
+                          id: user.id,
+                          email: user.email,
                         };
                       })
                     );
@@ -505,17 +532,17 @@ const component = () => {
             <Col span={8}></Col>
             <Col span={10}>
               <Row>
-                {collaborators.map((email) => {
+                {collaborators.map((user) => {
                   return (
                     <>
-                      <Col span={18}>{email}</Col>
+                      <Col span={18}>{user.email}</Col>
                       <Col span={6} style={{ textAlign: "right" }}>
                         <DeleteOutlined
                           className="pointer"
                           onClick={() => {
                             setCollaborators(
                               collaborators.filter(
-                                (emailSelected) => emailSelected !== email
+                                (opt) => opt.email !== user.email
                               )
                             );
                           }}

@@ -55,6 +55,9 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
         id: "asc",
       },
     ],
+    include: {
+      collaborators: { include: { User: true } },
+    },
   });
 
   // create new project if not exists
@@ -68,7 +71,6 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
         user: {
           connect: { id: user.id },
         },
-        collaborators: "",
       },
     });
 

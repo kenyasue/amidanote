@@ -125,7 +125,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (utils.isEmpty(name)) return res.status(400).send("name is required");
 
-  console.log("projectId",projectId);
+  console.log("projectId", projectId);
 
   const project = await prisma.project.findFirst({
     where: {
@@ -141,7 +141,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
     .filter((userId: string) => !!userId)
     .map((userId: string) => parseInt(userId));
 
-  console.log("collaboratorsFilterd",collaboratorsFilterd);
+  console.log("collaboratorsFilterd", collaboratorsFilterd);
 
   // delete all collaborators first
   await prisma.collaboratorsOnProjects.deleteMany({
@@ -150,7 +150,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
     },
   });
 
-  console.log("collaboratorsFilterd",collaboratorsFilterd);
+  console.log("collaboratorsFilterd", collaboratorsFilterd);
 
   const updatedProject = await prisma.project.update({
     where: { id: projectId },
@@ -159,6 +159,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
       isPrivate: isPrivate,
       collaborators: {
         connectOrCreate: collaboratorsFilterd.map((userId) => {
+          console.log("userId", userId);
           return {
             where: { id: userId },
             create: { User: { connect: { id: userId } } },

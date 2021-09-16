@@ -153,16 +153,15 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
   console.log("collaboratorsFilterd", collaboratorsFilterd);
 
   const updatedProject = await prisma.project.update({
-    where: { id: 1 },
+    where: { id: projectId },
     data: {
       name: name,
       isPrivate: isPrivate,
       collaborators: {
         connectOrCreate: collaboratorsFilterd.map((userId) => {
-          console.log("userId", userId);
           return {
-            where: { id: 5 },
-            create: { User: { connect: { id: 5 } } },
+            where: { id: userId },
+            create: { User: { connect: { id: userId } } },
           };
         }),
       },

@@ -110,7 +110,7 @@ export default (_req: NextApiRequest, res: NextApiResponse) => {
         title: "clover.md",
         version: "1.0.0",
       },
-      host: `localhost:3000`, // Host (optional)
+      host: `app.amidanote.com`, // Host (optional)
       basePath: "/", // Base path (optional)
     },
     apis: [projectTopPath + "/pages/api/**/*.ts"],

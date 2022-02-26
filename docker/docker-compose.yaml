@@ -1,6 +1,6 @@
 version: "3.3"
 services:
-  mysql:
+  amidanotemysql:
     image: "mysql:8.0"
     restart: always
     environment:
@@ -9,25 +9,8 @@ services:
       MYSQL_PASSWORD: ZjP68Ygd
       MYSQL_ROOT_PASSWORD: ZjP68Ygd
     ports:
-      - "3306:3306"
+      - "8024:3306"
     expose:
       - "3306"
     volumes:
-      - "docudocu-db:/var/lib/mysql"
-  mysql-test:
-    image: "mysql:8.0"
-    restart: always
-    environment:
-      MYSQL_DATABASE: dbtest
-      MYSQL_USER: mysqluser
-      MYSQL_PASSWORD: testtest
-      MYSQL_ROOT_PASSWORD: testtest
-    ports:
-      - "3307:3306"
-    expose:
-      - "3307"
-    volumes:
-      - "docudocu-db-test2:/var/lib/mysql"
-volumes:
-  docudocu-db:
-  docudocu-db-test2:
+      - "/media/ken/AppDisk1/apps/amidanote.com/data/mysql:/var/lib/mysql"

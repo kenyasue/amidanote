@@ -2,7 +2,6 @@ import axios from "axios";
 import type { file as FileModel } from "@prisma/client";
 import { responseInterface } from "swr";
 import type { NextApiRequest, NextApiResponse } from "next";
-import sha1 from "js-sha1";
 
 export interface FormData {
   fields: any;
@@ -78,11 +77,8 @@ export default class utils {
 
 
   static sha1 = (original: string): string => {
-    sha1(original);
-    const hash = sha1.create();
-    hash.update('Message to hash');
-    hash.hex();
-    return hash;
+    // todo: find a solution works in browser
+    return original;
   };
 
   static getThumbUrl = (file: FileModel, accessToken: string): string => {

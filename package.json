@@ -2,9 +2,9 @@
   "name": "with-ant-design",
   "version": "1.0.0",
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "dev": "NODE_OPTIONS='--inspect' next dev --port 8023",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --port 8023",
     "test": "./tests/start.sh",
     "prismastudio": "npx prisma studio",
     "swaggerdoc": "swagger-jsdoc -d ./pages/**/*.ts -o ./docs/swagger.json"

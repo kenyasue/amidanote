@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient, document, User, project } from "@prisma/client";
 const prisma = new PrismaClient();
 import { copyFile, unlink, writeFile } from "fs/promises";
-import { File } from "formidable";
+import formidable, { File } from "formidable";
 import imageThumbnail from "image-thumbnail";
 
 import utils from "../../lib/util";
@@ -32,6 +32,25 @@ export const config = {
   api: {
     bodyParser: false,
   },
+};
+
+const parseForm: Function = (request: NextApiRequest): Promise<any> => {
+  return new Promise((res, rej) => {
+    const form: formidable = new formidable.IncomingForm({
+      maxFieldsSize: parseInt(process.env.MAX_FILESIZE) * 1024 * 1024,
+    });
+
+    form.on("error", function (err: any) {
+      console.error(err);
+    });
+
+    form.on("end", function () { });
+
+    form.parse(request, (err, fields, files) => {
+      if (err) rej(err);
+      else res({ fields, files });
+    });
+  });
 };
 
 /**
@@ -182,7 +201,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!user) return res.status(403).send("Forbidden");
 
   try {
-    const requestBody = await utils.parseForm(req);
+    const requestBody = await parseForm(req);
 
     if (utils.isEmpty(requestBody.fields.documentId))
       return res.status(400).send("documentId is required");

@@ -1,8 +1,6 @@
 import axios from "axios";
 import type { file as FileModel } from "@prisma/client";
-import crypto from "crypto";
 import { responseInterface } from "swr";
-import formidable, { File } from "formidable";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export interface FormData {
@@ -76,30 +74,11 @@ export default class utils {
     return str.substr(0, limit) + suffix;
   };
 
-  static parseForm = (request: NextApiRequest): Promise<FormData> => {
-    return new Promise((res, rej) => {
-      const form: formidable = new formidable.IncomingForm({
-        maxFieldsSize: parseInt(process.env.MAX_FILESIZE) * 1024 * 1024,
-      });
 
-      form.on("error", function (err: any) {
-        console.error(err);
-      });
-
-      form.on("end", function () {});
-
-      form.parse(request, (err, fields, files) => {
-        if (err) rej(err);
-        else res({ fields, files });
-      });
-    });
-  };
 
   static sha1 = (original: string): string => {
-    const shasum = crypto.createHash("sha1");
-    shasum.update(original);
-    const hash = shasum.digest("hex");
-    return hash;
+    // todo: find a solution works in browser
+    return original;
   };
 
   static getThumbUrl = (file: FileModel, accessToken: string): string => {

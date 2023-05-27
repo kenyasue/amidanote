@@ -1,39 +1,39 @@
 {
-    "compilerOptions": {
-        "allowJs": true,
-        "alwaysStrict": false,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "isolatedModules": true,
-        "jsx": "preserve",
-        "lib": [
-            "dom",
-            "es2017"
-        ],
-        "module": "esnext",
-        "moduleResolution": "node",
-        "noEmit": true,
-        "noFallthroughCasesInSwitch": true,
-        "noUnusedLocals": false,
-        "noUnusedParameters": false,
-        "resolveJsonModule": true,
-        "skipLibCheck": true,
-        "strict": true,
-        "strictNullChecks": false,
-        "target": "esnext",
-        "typeRoots": [
-            "lib/customTypings",
-            "node_modules/@types"
-        ]
-    },
-    "exclude": [
-        "./tests/*",
-        "node_modules"
+  "compilerOptions": {
+    "allowJs": true,
+    "alwaysStrict": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "lib": [
+      "dom",
+      "es2017"
     ],
-    "include": [
-        "**/*.ts",
-        "**/*.tsx",
-        "./decs.d.ts"
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "strictNullChecks": false,
+    "target": "esnext",
+    "typeRoots": [
+      "lib/customTypings",
+      "node_modules/@types"
     ],
-
+    "incremental": true
+  },
+  "exclude": [
+    "./tests/*",
+    "node_modules"
+  ],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "./decs.d.ts"
+  ]
 }
